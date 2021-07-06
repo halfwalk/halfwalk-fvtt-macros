@@ -8,14 +8,6 @@ let dialogEditor = new Dialog({
 	content: `
 		<form>
 			<div class="form-group">
-				<label>Advantage?</label>
-				<select id = "adv" name="adv">
-					<option value="noAdv">None</option>
-					<option value="adv">Advantage</option>
-					<option value="disAdv">Disadvantage</option>
-				</select>
-			</div>
-			<div class="form-group">
 				<label>Skilled?</label>
 				<select id="skilled" name="skilled">
 					<option value="skill">Skilled</option>
@@ -25,15 +17,27 @@ let dialogEditor = new Dialog({
 		</form>
 		`,
 	buttons: {
-		yes: {
-			icon: "<i class='fas fa-check'></i>",
+		rollNormal: {
 			label: `Roll`,
-			callback: () => doRoll = true
+			callback: () => {
+				doRoll = true;
+				hasAdv = "noAdv";
+			}
 		},
-		no: {
-			icon: "<i class='fas fa-times'></i>",
-			label: `Cancel`
+		rollAdv: {
+			label: `Roll with Advantage`,
+			callback: () => {
+				doRoll = true;
+				hasAdv = "adv";
+			}
 		},
+		rollDisadv: {
+			label: `Roll with Disadvantage`,
+			callback: () => {
+				doRoll = true;
+				hasAdv ="disAdv";
+			}
+		}
 	},
 	default: "yes",
 	close: html => {
@@ -43,7 +47,7 @@ let dialogEditor = new Dialog({
 			let rollText;					
 			let resultText;
 			
-			let hasAdv = html.find('[name="adv"]')[0].value;
+			
 			let isSkilled = html.find('[name="skilled"]')[0].value;
 						
 			switch (hasAdv) {
@@ -65,14 +69,14 @@ let dialogEditor = new Dialog({
 			if (r==1) { resultText="Twist with a Cost"; }
 			else if (r==2) { resultText="Twist"; }
 			else if (r==3) {
-				if (isSkilled) { resultText="Success with a Cost"; }
+				if (isSkilled == "skill") { resultText="Success with a Cost"; }
 				else { resultText="Twist"; }
 			} else if (r==4) {
-				if (isSkilled) { resultText="Success"; }
+				if (isSkilled == "skill") { resultText="Success"; }
 				else { resultText="Success with a Cost"; }
 			} else if (r==5) { resultText="Success"; }
 			else if (r==6) {
-				if (isSkilled) { resultText="Success with a Bonus"; }
+				if (isSkilled == "skill") { resultText="Success with a Bonus"; }
 				else { resultText="Success; learn the Skill OR Bonus"; }
 			}
 			
