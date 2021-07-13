@@ -6,13 +6,15 @@ let ST=0;
 let soak=0;
 let mDef=0;
 let rDef=0;
-var isMinion;
-var advType;
+var isMinion, isRival, isNemesis;
+var advType, advName;
 var alch=0,astr=0,athl=0,comp=0,cool=0,coor=0,disc=0,driv=0,mech=0,medi=0,oper=0,perc=0,pilo=0,resi=0,ridi=0,skul=0,stea=0,stre=0,surv=0,vigi=0;
 var arca=0,divi=0,prim=0;
 var braw=0,gunn=0,mell=0,melh=0,mele=0,rang=0,ranl=0,ranh=0;
 var charm=0,coer=0,dece=0,lead=0,nego=0;
 var know=0;
+let weapons = [];
+let talents = [];
 
 const skillsList = ["alch","astr","athl","comp","cool","coor","disc","driv","mech","medi","oper","perc","pilo","resi","ridi","skul","stea","stre","surv","vigi","arca","divi","prim","braw","gunn","mell","melh","mele","rang","ranl","ranh","charm","coer","dece","lead","nego","know"];
 
@@ -39,10 +41,254 @@ async function parseCS() {
 }
 
 
-async function makeActor(chars, WT, ST, soak, mDef, rDef, isMinion, careerSkills, weapons, talents)
+async function makeActor()
 {
+	if (isMinion) advType = "minion";
+	else advType = "character";
 	
-}
+	let advData = {
+		name: advName,
+		type: advType,
+		data: {
+			stats: {
+				wounds: {
+					max: WT
+				},
+				strain: {
+					max: ST
+				},
+				defence: {
+					ranged: rDef,
+					melee: mDef
+				}
+			},
+			characteristics: {
+				Brawn: {
+					value: chars[0]
+				},
+				Agility: {
+					value: chars[1]
+				},
+				Intellect: {
+					value: chars[2]
+				},
+				Cunning: {
+					value: chars[3]
+				},
+				Willpower: {
+					value: chars[4]
+				},
+				Presence: {
+					value: chars[5]
+				}
+			},
+			skills: {
+				Brawl: {
+					rank: braw,
+					careerskill: skillsCS[23],
+					groupskill: skillsCS[23]
+				},
+				Gunnery: {
+					rank: gunn,
+					careerskill: skillsCS[24],
+					groupskill: skillsCS[24]
+				},
+				Melee: {
+					rank: mele,
+					careerskill: skillsCS[27],
+					groupskill: skillsCS[27]
+				},
+				"Melee-Heavy": {
+					rank: melh,
+					careerskill: skillsCS[26]
+				},
+				"Melee-Light": {
+					rank: mell,
+					careerskill: skillsCS[25]
+				},
+				Ranged: {
+					rank: rang,
+					careerskill: skillsCS[28],
+					groupskill: skillsCS[28]
+				},
+				"Ranged-Light": {
+					rank: ranl,
+					careerskill: skillsCS[29],
+					groupskill: skillsCS[29]
+				},
+				"Ranged-Heavy": {
+					rank: ranh,
+					careerskill: skillsCS[30],
+					groupskill: skillsCS[30]
+				},
+				Athletics: {
+					rank: athl,
+					careerskill: skillsCS[2],
+					groupskill: skillsCS[2]
+				},
+				Alchemy: {
+					rank: alch,
+					careerskill: skillsCS[0],
+					groupskill: skillsCS[0]
+				},
+				Astrocartography: {
+					rank: astr,
+					careerskill: skillsCS[1],
+					groupskill: skillsCS[1]
+				},
+				Computers: {
+					rank: comp,
+					careerskill: skillsCS[3],
+					groupskill: skillsCS[3]
+				},
+				Cool: {
+					rank: cool,
+					careerskill: skillsCS[4],
+					groupskill: skillsCS[4]
+				},
+				Coordination: {
+					rank: coor,
+					careerskill: skillsCS[5],
+					groupskill: skillsCS[5]
+				},
+				Discipline: {
+					rank: disc,
+					careerskill: skillsCS[6],
+					groupskill: skillsCS[6]
+				},
+				Driving: {
+					rank: driv,
+					careerskill: skillsCS[7],
+					groupskill: skillsCS[7]
+				},
+				Mechanics: {
+					rank: mech,
+					careerskill: skillsCS[8],
+					groupskill: skillsCS[8]
+				},
+				Medicine: {
+					rank: medi,
+					careerskill: skillsCS[9],
+					groupskill: skillsCS[9]
+				},
+				Operating: {
+					rank: oper,
+					careerskill: skillsCS[10],
+					groupskill: skillsCS[10]
+				},
+				Perception: {
+					rank: perc,
+					careerskill: skillsCS[11],
+					groupskill: skillsCS[11]
+				},
+				Piloting: {
+					rank: pilo,
+					careerskill: skillsCS[12],
+					groupskill: skillsCS[12]
+				},
+				Resilience: {
+					rank: resi,
+					careerskill: skillsCS[13],
+					groupskill: skillsCS[13]
+				},
+				Riding: {
+					rank: ridi,
+					careerskill: skillsCS[14],
+					groupskill: skillsCS[14]
+				},
+				Skulduggery: {
+					rank: skul,
+					careerskill: skillsCS[15],
+					groupskill: skillsCS[15]
+				},
+				Stealth: {
+					rank: stea,
+					careerskill: skillsCS[16],
+					groupskill: skillsCS[16]
+				},
+				Streetwise: {
+					rank: stre,
+					careerskill: skillsCS[17],
+					groupskill: skillsCS[17]
+				},
+				Survival: {
+					rank: surv,
+					careerskill: skillsCS[18],
+					groupskill: skillsCS[18]
+				},
+				Vigilance: {
+					rank: vigi,
+					careerskill: skillsCS[19],
+					groupskill: skillsCS[19]
+				},
+				Arcana: {
+					rank: arca,
+					careerskill: skillsCS[20],
+					groupskill: skillsCS[20]
+				},
+				Divine: {
+					rank: divi,
+					careerskill: skillsCS[21],
+					groupskill: skillsCS[21]
+				},
+				Primal: {
+					rank: prim,
+					careerskill: skillsCS[22],
+					groupskill: skillsCS[22]
+				},
+				Charm: {
+					rank: charm,
+					careerskill: skillsCS[31],
+					groupskill: skillsCS[31]
+				},
+				Coercion: {
+					rank: coer,
+					careerskill: skillsCS[32],
+					groupskill: skillsCS[32]
+				},
+				Deception: {
+					rank: dece,
+					careerskill: skillsCS[33],
+					groupskill: skillsCS[33]
+				},
+				Leadership: {
+					rank: lead,
+					careerskill: skillsCS[34],
+					groupskill: skillsCS[34]
+				},
+				Negotiation: {
+					rank: nego,
+					careerskill: skillsCS[35],
+					groupskill: skillsCS[35]
+				},
+				Knowledge: {
+					rank: know,
+					careerskill: skillsCS[36],
+					groupskill: skillsCS[36]
+				},
+				"Knowledge(Lore)": {
+					rank: know,
+					careerskill: skillsCS[36],
+					groupskill: skillsCS[36]
+				}
+				
+				
+				
+			},
+			unit_wounds: {
+				value: WT
+			}
+		}
+	};
+	
+	
+		
+	let actor = await Actor.create(advData);
+		
+} 
+
+			
+
 
 let dialogEditor = new Dialog({
     title: `Adversary Generator`,
@@ -252,9 +498,9 @@ let dialogEditor = new Dialog({
 				let chosenSkills2 = html.find('[name="skillPack2"]')[0].value;
 				let chosenSkills3 = html.find('[name="skillPack3"]')[0].value;
 				isMinion = html.find('[name="minion"]')[0].checked;
-				let isRival = html.find('[name="minion"]')[1].checked;
-				let isNemesis = html.find('[name="minion"]')[2].checked;
-				let advName = html.find('[name="name"]')[0].value;
+				isRival = html.find('[name="minion"]')[1].checked;
+				isNemesis = html.find('[name="minion"]')[2].checked;
+				advName = html.find('[name="name"]')[0].value;
 				
 				switch (chosenArray) {
 					case "smallCreature":
@@ -543,6 +789,7 @@ let dialogEditor = new Dialog({
 				parseCS();
 				console.log(skillsCS);
 				console.log(skillsList);
+				makeActor();
 				
 			}
 			
