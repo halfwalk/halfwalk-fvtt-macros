@@ -6,6 +6,12 @@ let ST=0;
 let soak=0;
 let mDef=0;
 let rDef=0;
+var armorName = "Defense";
+var weaponName = "weapon", weaponName2 = "weapon 2";
+var weaponDamage = 0;
+var weaponCrit = 0;
+var weaponChar = "";
+var weaponRange = "Short";
 var isMinion, isRival, isNemesis;
 var advType, advName;
 var alch=0,astr=0,athl=0,comp=0,cool=0,coor=0,disc=0,driv=0,mech=0,medi=0,oper=0,perc=0,pilo=0,resi=0,ridi=0,skul=0,stea=0,stre=0,surv=0,vigi=0;
@@ -45,6 +51,8 @@ async function makeActor()
 {
 	if (isMinion) advType = "minion";
 	else advType = "character";
+	let tokenName = advName;
+	advName = advName + " (" + challenge[0] + "/" + challenge[1] + "/" + challenge[2] + ")";
 	
 	let advData = {
 		name: advName,
@@ -271,14 +279,57 @@ async function makeActor()
 					careerskill: skillsCS[36],
 					groupskill: skillsCS[36]
 				}
-				
-				
-				
+			},
+			attributes: {
+				"Defence-Melee": {
+					value: mDef
+				},
+				"Defence-Ranged": {
+					value: rDef
+				}
 			},
 			unit_wounds: {
 				value: WT
 			}
+		},
+		token: {
+			name: tokenName
+		},
+		items: [
+		{
+			name: weaponName,
+			type: "weapon",
+			data: {
+				damage: {
+					value: weaponDamage
+				},
+				crit: {
+					value: weaponCrit
+				},
+				range: {
+					value: weaponRange
+				},
+				characteristic: {
+					value: weaponChar
+				},
+				equippable: {
+					equipped: true
+				}
+			}
+		},
+		{
+			name: armorName,
+			type: "armour",
+			data: {
+				soak: {
+					value: soak
+				},
+				equippable: {
+					equipped: true
+				}
+			}
 		}
+		]
 	};
 	
 	
@@ -501,6 +552,10 @@ let dialogEditor = new Dialog({
 				isRival = html.find('[name="minion"]')[1].checked;
 				isNemesis = html.find('[name="minion"]')[2].checked;
 				advName = html.find('[name="name"]')[0].value;
+				if (!isMinion && !isRival && !isNemesis) isRival = true;
+				if (advName.length == 0 && isMinion) advName = "New Minion";
+				else if (advName.length == 0 && isRival) advName = "New Rival";
+				else if (advName.length == 0 && isNemesis) advName = "New Nemesis";
 				
 				switch (chosenArray) {
 					case "smallCreature":
@@ -574,7 +629,6 @@ let dialogEditor = new Dialog({
 					ST = 10 + chars[4];
 				}
 				
-				soak = chars[0];
 				
 				let x = [];
 				
@@ -651,119 +705,301 @@ let dialogEditor = new Dialog({
 						case "none":
 							break;
 						case "basicCreature":
-							if (isMinion)
-								minionCS = ["athl", "braw", "surv", "vigi"];
-							else {
-								athl = Math.max(athl,1);
-								braw = Math.max(braw,1);
-								surv = Math.max(surv, 2);
-								vigi = Math.max(vigi, 2);
-							}
+							minionCS = ["athl", "braw", "surv", "vigi"];
+							athl = Math.max(athl,1);
+							braw = Math.max(braw,1);
+							surv = Math.max(surv, 2);
+							vigi = Math.max(vigi, 2);
 							break;
 						case "ferociousCreature":
-							if (isMinion)
-								minionCS = ["athl", "braw", "perc", "surv", "vigi"];
-							else {
-								athl = Math.max(athl,2);
-								braw = Math.max(braw,4);
-								perc = Math.max(perc,2);
-								surv = Math.max(surv,3);
-								vigi = Math.max(vigi,1);
-							}
+							minionCS = ["athl", "braw", "perc", "surv", "vigi"];
+							athl = Math.max(athl,2);
+							braw = Math.max(braw,4);
+							perc = Math.max(perc,2);
+							surv = Math.max(surv,3);
+							vigi = Math.max(vigi,1);
+							updateChallenge(1,0,1);
 							break;
 						case "predatoryCreature":
-							if (isMinion)
-								minionCS = ["braw", "coor", "perc", "surv", "stea"];
-							else {
-								braw = Math.max(braw,3);
-								coor = Math.max(coor,3);
-								perc = Math.max(perc,4);
-								surv = Math.max(surv,2);
-								stea = Math.max(stea,3);
-							}
+							minionCS = ["braw", "coor", "perc", "surv", "stea"];
+							braw = Math.max(braw,3);
+							coor = Math.max(coor,3);
+							perc = Math.max(perc,4);
+							surv = Math.max(surv,2);
+							stea = Math.max(stea,3);
+							updateChallenge(1,0,1);
 							break;
 						case "territorialCreature":
-							if (isMinion)
-								minionCS = ["braw", "resi", "surv", "vigi"];
-							else {
-								braw = Math.max(braw,2);
-								resi = Math.max(resi,3);
-								surv = Math.max(surv,4);
-								vigi = Math.max(vigi,4);
-							}
+							minionCS = ["braw", "resi", "surv", "vigi"];
+							braw = Math.max(braw,2);
+							resi = Math.max(resi,3);
+							surv = Math.max(surv,4);
+							vigi = Math.max(vigi,4);
+							updateChallenge(0,0,2);
 							break;
 						case "soldier":
-							if (isMinion)
-								minionCS = ["athl", "disc", "mele", "mell", "melh", "rang", "ranh", "ranl", "resi", "vigi"];
-							else {
-								athl = Math.max(athl,2);
-								disc = Math.max(disc,1);
-								mele = Math.max(mele,2);
-								mell = Math.max(mell,2);
-								melh = Math.max(melh,2);
-								rang = Math.max(rang,2);
-								ranl = Math.max(ranl,2);
-								ranh = Math.max(ranh,2);
-								resi = Math.max(resi,2);
-								vigi = Math.max(vigi,2);
-							}
+							minionCS = ["athl", "disc", "mele", "mell", "melh", "rang", "ranh", "ranl", "resi", "vigi"];
+							athl = Math.max(athl,2);
+							disc = Math.max(disc,1);
+							mele = Math.max(mele,2);
+							mell = Math.max(mell,2);
+							melh = Math.max(melh,2);
+							rang = Math.max(rang,2);
+							ranl = Math.max(ranl,2);
+							ranh = Math.max(ranh,2);
+							resi = Math.max(resi,2);
+							vigi = Math.max(vigi,2);
+							updateChallenge(1,0,1);
 							break;
 						case "duelist":
-							if (isMinion)
-								minionCS = ["cool", "coor", "mele", "mell", "stea"];
-							else {
-								cool = Math.max(cool,3);
-								coor = Math.max(coor,3);
-								mele = Math.max(mele,5);
-								mell = Math.max(mell,5);
-								stea = Math.max(stea,1);
-							}
+							minionCS = ["cool", "coor", "mele", "mell", "stea"];
+							cool = Math.max(cool,3);
+							coor = Math.max(coor,3);
+							mele = Math.max(mele,5);
+							mell = Math.max(mell,5);
+							stea = Math.max(stea,1);
+							updateChallenge(1,0,0);
 							break;
 						case "scout":
-							if (isMinion)
-								minionCS = ["cool", "perc", "rang", "ranh", "stea", "surv", "vigi"];
-							else {
-								cool = Math.max(cool,2);
-								perc = Math.max(perc,3);
-								rang = Math.max(rang,5);
-								ranh = Math.max(ranh,5);
-								stea = Math.max(stea,4);
-								surv = Math.max(surv,3);
-								vigi = Math.max(vigi,3);
-							}
+							minionCS = ["cool", "perc", "rang", "ranh", "stea", "surv", "vigi"];
+							cool = Math.max(cool,2);
+							perc = Math.max(perc,3);
+							rang = Math.max(rang,5);
+							ranh = Math.max(ranh,5);
+							stea = Math.max(stea,4);
+							surv = Math.max(surv,3);
+							vigi = Math.max(vigi,3);
+							updateChallenge(2,0,2);
 							break;
 						case "brawler":
-							if (isMinion)
-								minionCS = ["athl", "braw", "resi"];
-							else {
-								athl = Math.max(athl,3);
-								braw = Math.max(braw,2);
-								resi = Math.max(resi,2);
-							}
+							minionCS = ["athl", "braw", "resi"];
+							athl = Math.max(athl,3);
+							braw = Math.max(braw,2);
+							resi = Math.max(resi,2);
 							break;
 						case "gunslinger":
-							if (isMinion)
-								minionCS = ["cool", "coor", "rang", "ranl", "skul"];
-							else{
-								cool = Math.max(cool,3);
-								coor = Math.max(coor,2);
-								rang = Math.max(rang,4);
-								ranl = Math.max(ranl,4);
-								skul = Math.max(skul,3);
-							}
+							minionCS = ["cool", "coor", "rang", "ranl", "skul"];
+							cool = Math.max(cool,3);
+							coor = Math.max(coor,2);
+							rang = Math.max(rang,4);
+							ranl = Math.max(ranl,4);
+							skul = Math.max(skul,3);
+							updateChallenge(1,0,0);
 							break;
 						case "sailor":
-						if (isMinion)
-								minionCS = ["athl", "oper", "perc", "rang", "ranl", "vigi"];
-							else {
-								athl = Math.max(athl,2);
-								oper = Math.max(oper,3);
-								perc = Math.max(perc,2);
-								rang = Math.max(rang,1);
-								ranl = Math.max(ranl,1);
-								vigi = Math.max(vigi,1);
-							}
-							
+							minionCS = ["athl", "oper", "perc", "rang", "ranl", "vigi"];
+							athl = Math.max(athl,2);
+							oper = Math.max(oper,3);
+							perc = Math.max(perc,2);
+							rang = Math.max(rang,1);
+							ranl = Math.max(ranl,1);
+							vigi = Math.max(vigi,1);
+							updateChallenge(0,0,1);
+						case "spy":
+							minionCS = ["cool","charm","dece","know","skul","stea"];
+							cool = Math.max(cool,2);
+							charm = Math.max(charm,3);
+							dece = Math.max(dece,4);
+							know = Math.max(know,1);
+							skul = Math.max(skul,4);
+							stea = Math.max(stea,3);
+							updateChallenge(0,2,2);
+							break;							
+						case "thief":
+							minionCS = ["coor","dece","mele","mell","skul","stea","stre","vigi"];
+							coor = Math.max(coor,3);
+							dece = Math.max(dece,2);
+							mele = Math.max(mele,3);
+							mell = Math.max(mell,3);
+							skul = Math.max(skul,4);
+							stea = Math.max(stea,5);
+							stre = Math.max(stre,3);
+							vigi = Math.max(vigi,1);
+							updateChallenge(1,0,4);
+							break;
+						case "researcher":
+							minionCS = ["astr","comp","disc","know","perc"];
+							astr = Math.max(astr,5);
+							comp = Math.max(comp,3);
+							disc = Math.max(disc,2);
+							know = Math.max(know,5);
+							perc = Math.max(perc,4);
+							updateChallenge(0,0,5);
+							break;
+						case "philosopher":
+							minionCS = ["alch","know","medi","nego","perc"];
+							alch = Math.max(alch,4);
+							know = Math.max(know,4);
+							medi = Math.max(medi,2);
+							nego = Math.max(nego,1);
+							perc = Math.max(perc,2);
+							updateChallenge(0,0,3);
+							break;
+						case "doctor":
+							minionCS = ["cool","disc","lead","medi","mele","mell"];
+							cool = Math.max(cool,2);
+							disc = Math.max(disc,2);
+							lead = Math.max(lead,1);
+							medi = Math.max(medi,4);
+							mele = Math.max(mele,1);
+							mell = Math.max(mell,1);
+							updateChallenge(0,1,2);
+							break;
+						case "knight":
+							minionCS = ["athl","disc","driv","lead","mele","melh","ridi"];
+							athl = Math.max(athl,1);
+							disc = Math.max(disc,2);
+							driv = Math.max(driv,3);
+							lead = Math.max(lead,3);
+							mele = Math.max(mele,4);
+							melh = Math.max(melh,4);
+							ridi = Math.max(ridi,3);
+							updateChallenge(1,2,2);
+							break;
+						case "captain":
+							minionCS = ["astr","coer","disc","lead","mele","mell","oper","rang","ranl"];
+							astr = Math.max(astr,4);
+							coer = Math.max(coer,2);
+							disc = Math.max(disc,3);
+							lead = Math.max(lead,4);
+							oper = Math.max(oper,4);
+							rang = Math.max(rang,3);
+							ranl = Math.max(ranl,3);
+							updateChallenge(1,2,3);
+							break;
+						case "politician":
+							minionCS = ["charm","coer","cool","lead","nego","vigi"];
+							charm = Math.max(charm,4);
+							coer = Math.max(coer,2);
+							cool = Math.max(cool,2);
+							lead = Math.max(lead,3);
+							nego = Math.max(nego,5);
+							vigi = Math.max(vigi,1);
+							updateChallenge(0,3,1);
+							break;
+						case "mage":
+							minionCS = ["alch","arca","coer","know"];
+							alch = Math.max(alch,2);
+							arca = Math.max(arca,4);
+							coer = Math.max(coer,2);
+							know = Math.max(know,4);
+							updateChallenge(2,0,2);
+							break;
+						case "priest":
+							minionCS = ["charm","disc","divi","know"];
+							charm = Math.max(charm,2);
+							disc = Math.max(disc,3);
+							divi = Math.max(divi,4);
+							know = Math.max(know,4);
+							updateChallenge(2,1,2);
+							break;						
+						case "druid":
+							minionCS = ["know","prim","surv","vigi"];
+							know = Math.max(know,4);
+							prim = Math.max(prim,4);
+							surv = Math.max(surv,3);
+							vigi = Math.max(vigi,2);
+							updateChallenge(2,0,2);
+							break;						
+						case "pilot":
+							minionCS = ["cool","coor","driv","pilo","rang","ranl","ridi"];
+							cool = Math.max(cool,2);
+							coor = Math.max(coor,3);
+							driv = Math.max(driv,4);
+							pilo = Math.max(pilo,4);
+							rang = Math.max(rang,3);
+							ranl = Math.max(ranl,3);
+							ridi = Math.max(ridi,4);
+							updateChallenge(1,0,3);
+							break;						
+						case "merchant":
+							minionCS = ["charm","dece","nego","perc","vigi"];
+							charm = Math.max(charm,2);
+							dece = Math.max(dece,3);
+							nego = Math.max(nego,3);
+							perc = Math.max(perc,2);
+							vigi = Math.max(vigi,3);
+							updateChallenge(0,3,0);
+							break;
+						case "crimeBoss":
+							minionCS = ["braw","coer","disc","lead","rang","ranl","stre"];
+							braw = Math.max(braw,4);
+							coer = Math.max(coer,5);
+							disc = Math.max(disc,2);
+							lead = Math.max(lead,2);
+							rang = Math.max(rang,2);
+							ranl = Math.max(ranl,2);
+							stre = Math.max(stre,4);
+							updateChallenge(2,3,1);
+							break;
+						case "bureaucrat":
+							minionCS = ["cool","disc","know","nego","vigi"];
+							cool = Math.max(cool,3);
+							disc = Math.max(disc,3);
+							know = Math.max(know,2);
+							nego = Math.max(nego,2);
+							vigi = Math.max(vigi,3);
+							updateChallenge(0,3,1);
+							break;
+						case "mechanic":
+							minionCS = ["athl","braw","comp","mech","resi"];
+							athl = Math.max(athl,2);
+							braw = Math.max(braw,1);
+							comp = Math.max(comp,1);
+							mech = Math.max(mech,4);
+							resi = Math.max(resi,3);
+							updateChallenge(0,0,3);
+							break;
+						case "hacker":
+							minionCS = ["comp","cool","dece","stre"];
+							comp = Math.max(comp,5);
+							cool = Math.max(cool,2);
+							dece = Math.max(dece,2);
+							stre = Math.max(stre,2);
+							updateChallenge(0,1,3);
+							break;
+						case "criminal":
+							minionCS = ["braw","coer","resi","skul","stre"];
+							braw = Math.max(braw,2);
+							coer = Math.max(coer,3);
+							resi = Math.max(resi,3);
+							skul = Math.max(skul,3);
+							stre = Math.max(stre,2);
+							updateChallenge(0,1,2);
+							break;
+						case "investigator":
+							minionCS = ["charm","coer","disc","perc","stre","surv","vigi"];
+							charm = Math.max(charm,2);
+							coer = Math.max(coer,2);
+							disc = Math.max(disc,3);
+							perc = Math.max(perc,3);
+							stre = Math.max(stre,3);
+							surv = Math.max(surv,3);
+							vigi = Math.max(vigi,3);
+							updateChallenge(0,2,3);
+							break;
+						case "wrangler":
+							minionCS = ["athl","coor","perc","rang","ranl","ridi","surv"];
+							athl = Math.max(athl,4);
+							coor = Math.max(coor,2);
+							perc = Math.max(perc,3);
+							rang = Math.max(rang,2);
+							ranl = Math.max(ranl,2);
+							ridi = Math.max(ridi,3);
+							surv = Math.max(surv,4);
+							updateChallenge(0,0,3);
+						case "cop":
+							minionCS = ["coer","driv","lead","mele","mell","rang","ranl"];
+							coer = Math.max(coer,2);
+							driv = Math.max(driv,2);
+							lead = Math.max(lead,2);
+							mele = Math.max(mele,2);
+							mell = Math.max(mell,2);
+							rang = Math.max(rang,2);
+							ranl = Math.max(ranl,2);
+							updateChallenge(1,1,0);
+							break;
+						
 						default:
 					}
 				}
@@ -779,16 +1015,9 @@ let dialogEditor = new Dialog({
 				console.log("ST: " + ST);
 				console.log("Melee Defense: " + mDef);
 				console.log("Ranged Defense: " + rDef);
-				console.log("Athletics: " + athl);
-				console.log("Brawl: " + braw);
 				console.log(minionCS);
-				if (minionCS.includes("athl"))
-					console.log("Has athletics.");
-				else
-					console.log("Does not have athletics."); 
 				parseCS();
 				console.log(skillsCS);
-				console.log(skillsList);
 				makeActor();
 				
 			}
