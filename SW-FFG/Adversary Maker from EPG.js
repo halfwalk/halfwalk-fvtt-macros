@@ -11,10 +11,15 @@ var advType;
 var alch=0,astr=0,athl=0,comp=0,cool=0,coor=0,disc=0,driv=0,mech=0,medi=0,oper=0,perc=0,pilo=0,resi=0,ridi=0,skul=0,stea=0,stre=0,surv=0,vigi=0;
 var arca=0,divi=0,prim=0;
 var braw=0,gunn=0,mell=0,melh=0,mele=0,rang=0,ranl=0,ranh=0;
-var char=0,coer=0,dece=0,lead=0,nego=0;
+var charm=0,coer=0,dece=0,lead=0,nego=0;
 var know=0;
 
+const skillsList = ["alch","astr","athl","comp","cool","coor","disc","driv","mech","medi","oper","perc","pilo","resi","ridi","skul","stea","stre","surv","vigi","arca","divi","prim","braw","gunn","mell","melh","mele","rang","ranl","ranh","charm","coer","dece","lead","nego","know"];
+
+var skillsCS = [];
 var minionCS = [];
+
+
 
 async function fillChars(bra,agi,intel,cun,wil,pre) {
     chars = [bra,agi,intel,cun,wil,pre];
@@ -26,10 +31,27 @@ async function updateChallenge(com,soc,gen) {
 	challenge[2] += gen;
 }
 
+async function parseCS() {
+	skillsList.forEach((element) => {
+		if (minionCS.includes(element)) skillsCS.push(true);
+		else skillsCS.push(false);
+	});
+}
+
+
+async function makeActor(chars, WT, ST, soak, mDef, rDef, isMinion, careerSkills, weapons, talents)
+{
+	
+}
+
 let dialogEditor = new Dialog({
     title: `Adversary Generator`,
     content: `
         <form>
+			<div class="form-group">
+				<label>Name</label>
+				<input type="text" id="name" name="name">
+			</div>
 			<div class = "form-group">
 				<label>Is a minion?</label>
 				<input type="radio" id="minion" name="minion" value="minion">
@@ -218,9 +240,8 @@ let dialogEditor = new Dialog({
 				}
 			}
 		},
-		default: "okay",
-		close: html => {
-			// do the thing
+	default: "okay",
+	close: html => {
 			
 			if (makeAdv) {
 			
@@ -233,6 +254,7 @@ let dialogEditor = new Dialog({
 				isMinion = html.find('[name="minion"]')[0].checked;
 				let isRival = html.find('[name="minion"]')[1].checked;
 				let isNemesis = html.find('[name="minion"]')[2].checked;
+				let advName = html.find('[name="name"]')[0].value;
 				
 				switch (chosenArray) {
 					case "smallCreature":
@@ -503,6 +525,7 @@ let dialogEditor = new Dialog({
 				if (isMinion) {console.log("Minion");}
 				if (isRival) {console.log("Rival");}
 				if (isNemesis) {console.log("Nemesis");}
+				console.log("Name: " + advName);
 				console.log("Characteristic Array: " + chars);
 				console.log("Challenge: " + challenge);
 				console.log("Soak: " + soak);
@@ -512,6 +535,17 @@ let dialogEditor = new Dialog({
 				console.log("Ranged Defense: " + rDef);
 				console.log("Athletics: " + athl);
 				console.log("Brawl: " + braw);
+				console.log(minionCS);
+				if (minionCS.includes("athl"))
+					console.log("Has athletics.");
+				else
+					console.log("Does not have athletics."); 
+				parseCS();
+				console.log(skillsCS);
+				console.log(skillsList);
+				
 			}
+			
+			
 		}
 }).render(true);
