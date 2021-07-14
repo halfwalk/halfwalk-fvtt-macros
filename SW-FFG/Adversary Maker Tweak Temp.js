@@ -457,7 +457,7 @@ let dialogEditor = new Dialog({
 				<input type="text" id="name" name="name">
 			</div>
 			<div class = "form-group">
-				<label>Is a minion?</label>
+				<label>Type</label>
 				<input type="radio" id="minion" name="minion" value="minion">
 				<label for "minion">Minion</label>
 				<input type="radio" id="rival" name="minion" value="rival">
