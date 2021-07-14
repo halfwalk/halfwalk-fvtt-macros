@@ -288,13 +288,6 @@ function updateChallenge(com,soc,gen) {
 	challenge[2] += gen;
 }
 
-/*async function parseCS() {
-	skillsList.forEach((element) => {
-		if (minionCS.includes(element)) skillsCS.push(true);
-		else skillsCS.push(false);
-	});
-}*/
-
 function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 	
 	let newWeapon = {};
