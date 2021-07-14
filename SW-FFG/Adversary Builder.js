@@ -2,17 +2,12 @@ var chars;
 var challenge = [0,0,0];
 var makeAdv;
 var WT=0, ST=0, soak=0, mDef=0, rDef=0;
-var armorName = "Defense";
-var weaponName = "weapon", weaponName2 = "weapon 2";
-var weaponDamage = 0;
-var weaponCrit = 0;
-var weaponChar = "";
-var weaponRange = "Short";
 var isMinion, isRival, isNemesis;
 var advType, advName;
 let weapons = [];
 let talents = [];
 let gear = [];
+let armor = [];
 let skillsArr = [];
 let skillsToMake = [];
 var skillsCS = [];
@@ -21,6 +16,20 @@ const skillsList = ["Alchemy","Astrocartography","Athletics","Computers","Cool",
 let skillScores = [];
 let meleeHeavy,meleeLight,rangedHeavy,rangedLight;
 
+skillsList.forEach(()=> {skillScores.push(0);});
+
+// define weapon qualities
+
+let autoFire={
+	name: "Auto-Fire",
+	type: "itemmodifier",
+	data: {
+		description: `Can choose to shoot in rapid fire. Increase difficulty by [di]. Trigger additional hits with [ad][ad], against any targets. Initial target must be highest difficulty/defense, and initial hit must be against initial target. Can activate crit on each hit with enough [ad].`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
 let knockdown={
 	name: "Knockdown",
 	type: "itemmodifier",
@@ -63,6 +72,17 @@ let cumbersome3={
 		rank: 3
 	}
 };
+let cumbersome4={
+	name: "Cumbersome 4",
+	type: "itemmodifier",
+	data: {
+		description: `Requires Brawn 4. Add [di] for each point below 3.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 4
+	}
+};
 let inferior={
 	name: "Inferior 1",
 	type: "itemmodifier",
@@ -76,7 +96,8 @@ let inferior={
 			}
 		},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let disorient1={
@@ -86,7 +107,8 @@ let disorient1={
 		description: `Spend [ad][ad] on hit to disorient target for 1 round.`,
 		attributes: {},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let disorient2={
@@ -118,7 +140,8 @@ let defensive1={
 		description: `Increase melee defense by 1 (must add manually)`,
 		attributes: {},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let pierce2={
@@ -139,7 +162,30 @@ let vicious1={
 		description: `+10 to critical injury rolls`,
 		attributes: {},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
+	}
+};
+let prepare1={
+	name: "Prepare 1",
+	type: "itemmodifier",
+	data: {
+		description: `Must perform 1 maneuver preparing the weapon prior to making an attack.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 1
+	}
+};
+let vicious2={
+	name: "Vicious 2",
+	type: "itemmodifier",
+	data: {
+		description: `+20 to critical injury rolls`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
 	}
 };
 let vicious3={
@@ -161,6 +207,7 @@ let deflection1={
 		attributes: {},
 		itemmodifier: [],
 		type: "all",
+		rank:1
 	}
 };
 let inaccurate1={
@@ -176,7 +223,8 @@ let inaccurate1={
 			}
 		},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let stun4={
@@ -198,6 +246,7 @@ let stunDamage={
 		attributes: {},
 		itemmodifier: [],
 		type: "all",
+		rank: 1
 	}
 };
 let accurate1={
@@ -213,7 +262,8 @@ let accurate1={
 			}
 		},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let ensnare3={
@@ -234,7 +284,8 @@ let limitedAmmo1={
 		description: `Weapon must be reloaded with a maneuver after 1 use (or is a single use item).`,
 		attributes: {},
 		itemmodifier: [],
-		type: "all"
+		type: "all",
+		rank: 1
 	}
 };
 let limitedAmmo2={
@@ -248,12 +299,322 @@ let limitedAmmo2={
 		rank: 2
 	}
 };
+let blast10={
+	name: "Blast 10",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] to trigger on a hit (or [ad][ad][ad] on a miss). The target and everyone engaged with it suffer 10 damage plus one for every uncanceled [su] on the check.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 10
+	}
+};
+let breach2={
+	name: "Breach 2",
+	type: "itemmodifier",
+	data: {
+		description: `This weapon ignores 2 vehicle armor (i.e. 20 soak).`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
+	}
+};
 
-skillsList.forEach(()=> {
-	skillScores.push(0);
-//	skillsCS.push(false);
-});
+// define gear items
+let gearDefensiveWeapon={
+      "_id": "op67l04y3nmEE4Oi",
+      "name": "Defensive Weapon",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": "",
+        "attributes": {
+          "attr1626288101875": {
+            "modtype": "Stat",
+            "value": 1,
+            "mod": "Defence-Melee"
+          }          
+        },
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+}
+let gearTraveler={
+      "_id": "op67l04y3nmEd4Oi",
+      "name": "Traveler Gear",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Heavy Cloak: +1 defense<p>Survival Pack: remove [se] from Survival or Perception checks.<p>Meager coin purse or wallet.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearCriminal={
+      "_id": "op67l24y3nmEd4Oi",
+      "name": "Criminal loadout",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Dark Clothing: +2 defense. Add [bo] to stealth checks.<p>Thieves' Tools: add [ad] to Skulduggery checks to open locks.<p>Backpack, rope with grappling hook.`,
+        "attributes": {
+			"attr1625183887586": {
+				"modtype": "Skill Boost",
+				value: 1,
+				mod: "Stealth"
+			}
+		},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+}	
+let gearDoctor={
+      "_id": "op67l04y3nmFE4Oi",
+      "name": "Doctor Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Clean clothing and face protection: add [bo] to resilience vs disease or airborne toxins.<p>Medicine kit: allows character to perform medicine checks to heal wounds and critical injuries without penalty. +1 to wounds healed.<p>Notebook.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearNoble={
+      "_id": "op67214y3nmFE4Oi",
+      "name": "Noble Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Fancy Clothing: add [ad] to social checks.<p>Signet of authority: add [su] to social checks against those of lesser social standing.<p>Important documents, full coin purse or wallet.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearBasicRanged={
+      "_id": "op67215z3nmFE4Oi",
+      "name": "Basic Warrior Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Reinforced uniform or light armor.<p>Ammunition reload.<p>Survival pack: remove [se] from Survival or Perception checks.<p>1 painkiller or healing potion.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearHeavyRanged={
+      "_id": "op67226y3nmFE4Oi",
+      "name": "Heavy Ranged Warrior Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Heavy defensive armor.<p>Ammunition reload.<p>Backpack.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+// define talents and abilities
 
+
+function updateArmor (aName, aSoak) {
+	soak += aSoak;
+	armorName = aName;
+}
 
 async function makeSkill (skill, sRank) {
 	let sName = skillsList[skill];
@@ -289,6 +650,40 @@ function updateChallenge(com,soc,gen) {
 	challenge[2] += gen;
 }
 
+function makeArmor (aName,aSoak,mDef,rDef) {
+	
+	let newArmor = {};
+	
+			
+	newArmor = {
+		name: aName,
+		type: "armour",
+		data: {
+			description: "",
+			attributes: {
+				"attr1626293881743": {
+					modtype: "Stat",
+					value: mDef,
+					mod: "Defence-Melee"
+				},
+				"attr1626293881854": {
+					modtype: "Stat",
+					value: rDef,
+					mod: "Defence-Ranged"
+				}
+			},				
+			soak: {
+				value: aSoak,
+			},
+			equippable: {
+				equipped: true
+			},
+			itemmodifier: []
+		}
+	}
+	armor.push(newArmor);
+}
+
 function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 	
 	let newWeapon = {};
@@ -298,8 +693,10 @@ function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 	if (qualsList.length > 0) {
 		qualsList.forEach((i)=> {
 			qualsText += " " + i.name;
+			i.name = i.name.replace(/\d+$/,'');
 		});
 	}
+	
 			
 	newWeapon = {
 		name: wName,
@@ -605,19 +1002,7 @@ async function makeActor() {
 			...weapons,
 			...talents,
 			...gear,
-			{
-				name: armorName,
-				type: "armour",
-				data: {
-					soak: {
-						value: soak
-					},
-					equippable: {
-						equipped: true
-					}
-				}
-			},
-		
+			...armor
 		]
 		
 	};
@@ -990,24 +1375,22 @@ let dialogEditor = new Dialog({
 							case "none":
 								break;
 							case "toughSkin":
-								soak += 1;
+								makeArmor("Tough Skin",1,0,0);
 								WT += 2;
 								break;
 							case "armoredHide":
-								soak += 2;
+								makeArmor("Armored Hide",2,0,0);
 								WT += 5;
 								updateChallenge(1,0,0);
 								break;
 							case "dodgy":
-								mDef +=1;
-								rDef +=1;
+								makeArmor("Dodgy",0,1,1);
 								break;
 							case "closeCombatant":
-								mDef +=2;
+								makeArmor("Close Combatant",0,2,0);
 								break;
 							case "camouflaged":
-								mDef +=1;
-								rDef +=2;
+								makeArmor("Camouflaged",0,1,2);
 								updateChallenge(1,0,0);
 								break;
 							case "hardy":
@@ -1337,27 +1720,66 @@ let dialogEditor = new Dialog({
 						break;
 					case "laborer":
 						makeWeapon("Large farming implement or tool",3+chars[0],5,"Engaged",meleeHeavy,true,[cumbersome3]);
-						soak +=1;
+						makeArmor("Heavy Clothes",1,0,0);
 						break;
 					case "citizen":
 						makeWeapon("Fists",chars[0],6,"Engaged","Brawl",true,[disorient1,knockdown]);
 						break;
 					case "blueCollar":
 						makeWeapon("Improvised brawling weapon",1+chars[0],5,"Engaged","Brawl",true,[disorient2,inferior]);
-						soak += 1;
+						makeArmor("Heavy clothing",1,0,0);
 						updateChallenge(0,0,1);
 						break;
 					case "traveler":
 						makeWeapon("Walking staff",2+chars[0],4,"Engaged",meleeHeavy,true,[defensive1,disorient2]);
-						mDef += 1;
-						rDef += 1;
+						makeArmor("Heavy cloak",0,1,1);
+						gear.push(gearTraveler);
 						break;
 					case "criminal":
 						makeWeapon("Concealable melee weapon",1+chars[0],2,"Engaged",meleeLight,true,[pierce2]);
-						mDef += 2;
-						rDef += 2;
+						makeArmor("Dark clothing",0,2,2);
+						gear.push(gearCriminal);
 						updateChallenge(1,0,1);
-						
+						break;
+					case "doctor":
+						makeWeapon("Sharp medical tool",chars[0],1,"Engaged",meleeLight,true,[]);
+						gear.push(gearDoctor);
+						updateChallenge(0,0,1);
+						break;
+					case "noble":
+						makeWeapon("Dueling weapon",2+chars[0],3,"Engaged",meleeLight,true,[defensive1]);
+						gear.push(gearNoble);
+						updateChallenge(0,1,0);
+						break;
+					case "basicRanged":
+						makeWeapon("Two-handed ranged weapon",8,3,"Long",rangedHeavy,false,[]);
+						makeWeapon("One-handed melee weapon",2+chars[0],3,"Engaged",meleeLight,true,[vicious1]);
+						makeArmor("Reinforced uniform or light armor",1,0,0);
+						gear.push(gearBasicRanged);
+						updateChallenge(2,0,0);
+						break;
+					case "heavyRanged":
+						makeWeapon("Heavy rapid-firing ranged weapon",12,3,"Long","Gunnery",false,[autoFire,cumbersome3,vicious2]);
+						makeWeapon("Powerful single-shot ranged weapon",20,2,"Extreme","Gunnery",false,[blast10,breach2,cumbersome4,limitedAmmo1,prepare1]);
+						makeArmor("Heavy Defensive Armor",3,0,0);
+						gear.push(gearHeavyRanged);
+						updateChallenge(4,0,0);
+						break;
+					case "basicMelee":
+						makeWeapon("One-handed defensive melee weapon",2+chars[0],4,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("Shield",chars[0],6,"Engaged",meleeLight,true,[defensive1,deflection1,inaccurate1,knockdown]);
+						makeArmor("Medium Armor",2,0,0);
+						makeArmor("Defensive Weapon",0,1,0);
+						makeArmor("Shield",0,1,1);
+						updateChallenge(1,0,0);
+						break;
+					case "heavyMelee":
+						makeWeapon("Two-handed Melee Weapon",4+chars[0],3,"Engaged",meleeHeavy,true,[cumbersome3,pierce2,vicious1]);
+						makeWeapon("One-handed Versatile Weapon",3+chars[0],2,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("Shield",chars[0],6,"Engaged",meleeLight,true,[defensive1,deflection1,inaccurate1,knockdown]);
+						makeArmor("Defensive Weapon",0,1,0);
+						makeArmor("Shield",0,1,1);
+						makeArmor("Heavy Armor",2,1,1);
 					default:
 				}
 					
