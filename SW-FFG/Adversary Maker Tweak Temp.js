@@ -18,32 +18,187 @@ var skillsCS = [];
 const alch=0,astr=1,athl=2,comp=3,cool=4,coor=5,disc=6,driv=7,mech=8,medi=9,oper=10,perc=11,pilo=12,resi=13,ridi=14,skul=15,stea=16,stre=17,surv=18,vigi=19,arca=20,divi=21,prim=22,braw=23,gunn=24,mell=25,melh=26,mele=27,rang=28,ranl=29,ranh=30,charm=31,coer=32,dece=33,lead=34,nego=35,know=36;
 const skillsList = ["Alchemy","Astrocartography","Athletics","Computers","Cool","Coordination","Discipline","Driving","Mechanics","Medicine","Operating","Perception","Piloting","Resilience","Riding","Skulduggery","Stealth","Streetwise","Survival","Vigilance","Arcana","Divine","Primal","Brawl","Gunnery","Melee-Light","Melee-Heavy","Melee","Ranged","Ranged-Light","Ranged-Heavy","Charm","Coercion","Deception","Leadership","Negotiation","Knowledge"];
 let skillScores = [];
+let meleeHeavy,meleeLight,rangedHeavy,rangedLight;
 
 let knockdown={
 	name: "Knockdown",
 	type: "itemmodifier",
 	data: {
-		description: `Spend [ad][ad][ to knock the target prone.`,
+		description: `Spend [ad][ad] to knock the target prone.`,
 		attributes: {},
 		itemmodifier: [],
 		type: "all"
 	}
 };
-let stun2={};
-let concussive1={};
-let cumbersome3={};
-let inferior={};
-let disorient1={};
-let disorient2={};
-let disorient3={};
-let defensive1={};
-let pierce2={};
-let vicious1={};
-let vicious3={};
-let deflection1={};
-let inaccurate1={};
-let stun4={};
-let stunDamage={};
+let stun2={
+	name: "Stun 2",
+	type: "itemmodifier",
+	data: {
+		description: `Can spend [ad][ad] to deal 2 strain to the target, which bypasses soak.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
+	}
+};
+let concussive1={
+	name: "Concussive",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] on hit to stagger target for 1 round.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let cumbersome3={
+	name: "Cumbersome 3",
+	type: "itemmodifier",
+	data: {
+		description: `Requires Brawn 3. Add [di] for each point below 3.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 3
+	}
+};
+let inferior={
+	name: "Inferior 1",
+	type: "itemmodifier",
+	data: {
+		description: `Add [th] to all attack checks.`,
+		attributes: {
+			attr1626316553135: {
+				modtype: "Result Modifiers",
+				value: 1,
+				mod: "Add Threat"
+			}
+		},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let disorient1={
+	name: "Disorient 1",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] on hit to disorient target for 1 round.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let disorient2={
+	name: "Disorient 2",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] on hit to disorient target for 2 rounds.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
+	}
+};
+let disorient3={
+	name: "Disorient 3",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] on hit to disorient target for 3 rounds.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 3
+	}
+};
+let defensive1={
+	name: "Defensive 1",
+	type: "itemmodifier",
+	data: {
+		description: `Increase melee defense by 1 (must add manually)`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let pierce2={
+	name: "Pierce 2",
+	type: "itemmodifier",
+	data: {
+		description: `Ignore up to 2 points of soak`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
+	}
+};
+let vicious1={
+	name: "Vicious 1",
+	type: "itemmodifier",
+	data: {
+		description: `+10 to critical injury rolls`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let vicious3={
+	name: "Vicious 3",
+	type: "itemmodifier",
+	data: {
+		description: `+30 to critical injury rolls`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 3
+	}
+};
+let deflection1={
+	name: "Deflection 1",
+	type: "itemmodifier",
+	data: {
+		description: `+1 to ranged defense (must be manually applied)`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+	}
+};
+let inaccurate1={
+	name: "Inaccurate 1",
+	type: "itemmodifier",
+	data: {
+		description: `Add [se] to all attack checks.`,
+		attributes: {
+			attr1626416553135: {
+				modtype: "Roll Modifiers",
+				value: 1,
+				mod: "Add Setback"
+			}
+		},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let stun4={
+	name: "Stun 4",
+	type: "itemmodifier",
+	data: {
+		description: `Can spend [ad][ad] to deal 4 strain to the target, which bypasses soak.`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 4
+	}
+};
+let stunDamage={
+	name: "Stun Damage",
+	type: "itemmodifier",
+	data: {
+		description: `This weapon can only deal strain damage (still reduced by soak)`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+	}
+};
 let accurate1={
 	name: "Accurate 1",
 	type: "itemmodifier",
@@ -60,9 +215,38 @@ let accurate1={
 		type: "all"
 	}
 };
-let ensnare3={};
-let limitedAmmo1={};
-let limitedAmmo2={};
+let ensnare3={
+	name: "Ensnare 3",
+	type: "itemmodifier",
+	data: {
+		description: `Spend [ad][ad] on hit to immobiliz target for 3 rounds. (escape [di][di][di] athletics)`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 3
+	}
+};
+let limitedAmmo1={
+	name: "Limited Ammo 1",
+	type: "itemmodifier",
+	data: {
+		description: `Weapon must be reloaded with a maneuver after 1 use (or is a single use item).`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all"
+	}
+};
+let limitedAmmo2={
+	name: "Limited Ammo 2",
+	type: "itemmodifier",
+	data: {
+		description: `Weapon must be reloaded with a maneuver after 2 uses`,
+		attributes: {},
+		itemmodifier: [],
+		type: "all",
+		rank: 2
+	}
+};
 
 skillsList.forEach(()=> {
 	skillScores.push(0);
@@ -164,8 +348,7 @@ function updateSkill(skill,rank) {
 	skillScores[skill] = Math.max(skillScores[skill],rank);
 }
 
-async function makeActor()
-{
+async function makeActor() {
 	let STadj = 0;
 	if (isMinion) advType = "minion";
 	else advType = "character";
@@ -656,6 +839,15 @@ let dialogEditor = new Dialog({
 					<option value="offensiveMagic">Offensive Magic User</option>
 				</select>
 			</div>
+			<p>Does your setting split melee and/or ranged into heavy and light skills?</p>
+			<div class="form-group">
+				<label>Weapon Skills</label>
+				<input type="checkbox" id="splitMelee" name="splitMelee" value="splitMelee">
+				<label for "splitMelee">Melee</label>
+				<input type="checkbox" id="splitRanged" name="splitRanged" value="splitRanged">
+				<label for "splitRanged">Ranged</label>
+			</div>
+				
         </form>
         `,
         buttons: {
@@ -1116,7 +1308,32 @@ let dialogEditor = new Dialog({
 						break;
 					case "largeBeast":
 						makeWeapon("Gaping maw or razor claws",4+chars[0],2,"Engaged","Brawl",true,[vicious3]);
-						makeWeapon("tentacles or thundering hooves",5+chars[0],4,"Engaged","Brawl",true,[knockdown,concussive1]);
+						makeWeapon("Tentacles or thundering hooves",5+chars[0],4,"Engaged","Brawl",true,[knockdown,concussive1]);
+						updateChallenge(1,0,0);
+						break;
+					case "laborer":
+						makeWeapon("Large farming implement or tool",3+chars[0],5,"Engaged","Melee-Heavy",true,[cumbersome3]);
+						soak +=1;
+						break;
+					case "citizen":
+						makeWeapon("Fists",chars[0],6,"Engaged","Brawl",true,[disorient1,knockdown]);
+						break;
+					case "blueCollar":
+						makeWeapon("Improvised brawling weapon",1+chars[0],5,"Engaged","Brawl",true,[disorient2,inferior]);
+						soak += 1;
+						updateChallenge(0,0,1);
+						break;
+					case "traveler":
+						makeWeapon("Walking staff",2+chars[0],4,"Engaged","Melee-Heavy",true,[defensive1,disorient2]);
+						mDef += 1;
+						rDef += 1;
+						break;
+					case "criminal":
+						makeWeapon("Concealable melee weapon",1+chars[0],2,"Engaged","Melee-Light",true,[pierce2]);
+						mDef += 2;
+						rDef += 2;
+						updateChallenge(1,0,1);
+						
 					default:
 				}
 					
@@ -1132,14 +1349,6 @@ let dialogEditor = new Dialog({
 				console.log("ST: " + ST);
 				console.log("Melee Defense: " + mDef);
 				console.log("Ranged Defense: " + rDef);
-				// console.log(minionCS);
-				// parseCS();
-				/* skillScores.forEach((i,j)=> {
-					if (i > 0) {
-						skillsCS[j] = true;
-					}
-				});
-				console.log(skillsCS);*/
 				console.log(skillsToMake);
 				makeActor();
 				
