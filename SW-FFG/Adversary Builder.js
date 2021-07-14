@@ -637,13 +637,6 @@ async function makeSkill (skill, sRank) {
 	skillsToMake.push(newSkill);
 }
 
-let done;
-
-async function fillChars(bra,agi,intel,cun,wil,pre) {
-	chars = [bra,agi,intel,cun,wil,pre];
-	return true;
-}
-
 function updateChallenge(com,soc,gen) {
 	challenge[0] += com;
 	challenge[1] += soc;
@@ -685,9 +678,14 @@ function makeArmor (aName,aSoak,mDef,rDef) {
 }
 
 function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
+	let wDamMod;
+	let wChar = "";
+	if (isBrawn) {
+		wChar = "Brawn";
+		wDamMod = wDam;
+	}
 	
 	let newWeapon = {};
-	let wChar = "";
 	console.log(qualsList);
 	let qualsText = "";
 	if (qualsList.length > 0) {
@@ -702,6 +700,13 @@ function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 		name: wName,
 		type: "weapon",
 		data: {
+			attributes: {
+				"attr1626299161112": {
+					"modtype": "Weapon Stat",
+					value: wDamMod,
+					mod: "damage"
+				}
+			},
 			damage: {
 				value: wDam,
 				adjusted: wDam
@@ -1289,59 +1294,59 @@ let dialogEditor = new Dialog({
 				
 				switch (chosenArray) {
 					case "smallCreature":
-						fillChars(1,2,3,1,1,1);
+						chars = [1,2,3,1,1,1];
 						updateChallenge(-1,-1,0);
 						break;
 					case "largeCreature":
-						fillChars(4,2,2,1,1,1);
+						chars = [4,2,2,1,1,1];
 						updateChallenge(1,-1,0);
 						break;
 					case "stealthyCreature":
-						fillChars(2,3,3,1,1,1);
+						chars = [2,3,3,1,1,1];
 						updateChallenge(0,-1,0);
 						break;
 					case "hugeCreature":
-						fillChars(5,1,1,1,1,1);
+						chars = [5,1,1,1,1,1];
 						updateChallenge(1,-1,-1);
 						break;
 					case "averagePerson":
-						fillChars(2,2,2,2,2,2);
+						chars = [2,2,2,2,2,2];
 						updateChallenge(0,0,0);
 						break;
 					case "toughPerson":
-						fillChars(3,2,2,2,2,1);
+						chars = [3,2,2,2,2,1];
 						updateChallenge(0,-1,0);
 						break;
 					case "smartPerson":
-						fillChars(1,2,2,3,2,2);
+						chars = [1,2,2,3,2,2];
 						updateChallenge(-1,0,0);
 						break;
 					case "sociablePerson":
-						fillChars(2,2,2,2,1,3);
+						chars = [2,2,2,2,1,3];
 						updateChallenge(0,0,0);
 						break;
 					case "jack":
-						fillChars(3,3,3,3,3,3);
+						chars = [3,3,3,3,3,3];
 						updateChallenge(1,1,1);
 						break;
 					case "skilledWarrior":
-						fillChars(4,3,2,2,3,1);
+						chars = [4,3,2,2,3,1];
 						updateChallenge(2,0,0);
 						break;
 					case "savant":
-						fillChars(2,1,2,5,2,1);
+						chars = [2,1,2,5,2,1];
 						updateChallenge(-1,-1,1);
 						break;
 					case "bornLeader":
-						fillChars(2,2,3,2,3,5);
+						chars = [2,2,3,2,3,5];
 						updateChallenge(0,2,0);
 						break;
 					case "cunningFoe":
-						fillChars(2,4,4,2,2,2);
+						chars = [2,4,4,2,2,2];
 						updateChallenge(1,0,1);
 						break;
 					case "mastermind":
-						fillChars(3,3,4,4,5,3);
+						chars = [3,3,4,4,5,3];
 						updateChallenge(1,2,2);
 						break;
 					default:
@@ -1711,7 +1716,7 @@ let dialogEditor = new Dialog({
 				
 				switch (equipment) {
 					case "smallBeast":
-						makeWeapon("Teeth and claws",2+chars[0],3,"Engaged","Brawl",true,[accurate1,knockdown]);
+						makeWeapon("Teeth and claws",2,3,"Engaged","Brawl",true,[accurate1,knockdown]);
 						break;
 					case "largeBeast":
 						makeWeapon("Gaping maw or razor claws",4+chars[0],2,"Engaged","Brawl",true,[vicious3]);
@@ -1780,6 +1785,11 @@ let dialogEditor = new Dialog({
 						makeArmor("Defensive Weapon",0,1,0);
 						makeArmor("Shield",0,1,1);
 						makeArmor("Heavy Armor",2,1,1);
+						updateChallenge(2,0,0);
+						break;
+					case "versatileWarrior":
+						makeWeapon("One-handed Versatile Weapon",3+chars[0],2,"Engaged",meleeLight,true,[defensive1]);
+						break;
 					default:
 				}
 					
