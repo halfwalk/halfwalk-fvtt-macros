@@ -323,51 +323,7 @@ let breach2={
 };
 
 // define gear items
-let gearDefensiveWeapon={
-      "_id": "op67l04y3nmEE4Oi",
-      "name": "Defensive Weapon",
-      "type": "gear",
-      "img": "icons/svg/item-bag.svg",
-      "data": {
-        "description": "",
-        "attributes": {
-          "attr1626288101875": {
-            "modtype": "Stat",
-            "value": 1,
-            "mod": "Defence-Melee"
-          }          
-        },
-        "quantity": {
-          "value": 1,
-          "type": "Number",
-          "label": "Quantity",
-          "abrev": "Qty"
-        },
-        "encumbrance": {
-          "value": 0,
-          "type": "Number",
-          "label": "Encumbrance",
-          "abrev": "Encum",
-          "adjusted": 0
-        },
-        "price": {
-          "value": 0,
-          "type": "Number",
-          "label": "Price",
-          "adjusted": 0
-        },
-        "rarity": {
-          "value": 0,
-          "type": "Number",
-          "label": "Rarity",
-          "adjusted": 0,
-          "isrestricted": false
-        },
-        "itemattachment": [],
-        "itemmodifier": []
-      },
-      "effects": []
-}
+
 let gearTraveler={
       "_id": "op67l04y3nmEd4Oi",
       "name": "Traveler Gear",
@@ -608,6 +564,271 @@ let gearHeavyRanged={
       },
       "effects": []
 };
+let gearGameHunter={
+      "_id": "op56l24y3nmEd4Oi",
+      "name": "Game Hunter Loadout",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Camouflage: Add [bo] to Stealth checks.<p>Survival Pack: Remove [se] from Survival or Perception checks.<p>Ammunition Reload.<p>Long-Ranged Hunting Weapon: Remove [di] from long or extreme range combat checks.`,
+        "attributes": {
+			"attr1625183887586": {
+				"modtype": "Skill Boost",
+				value: 1,
+				mod: "Stealth"
+			}
+		},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+}
+let gearLEO={
+      "_id": "op56l24y4nmEd4Oi",
+      "name": "Law Enforcement Loadout",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Badge of Authority: Add [bo] to Coercion or Leadership checks.<p>Restraints.<p>Torch or other light source.`,
+        "attributes": {
+			"attr1625183887586": {
+				"modtype": "Skill Boost",
+				value: 1,
+				mod: "Leadership"
+			},
+			"attr1635293887586": {
+				"modtype": "Skill Boost",
+				value: 1,
+				mod: "Coercion"
+			}
+		},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+}
+let gearPilot={
+      "_id": "op67336y3nmFE4Oi",
+      "name": "Pilot Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Flight outfit.<p>Emergency Survival Kit: Remove [se] from Survival or Perception checks.<p>1 Painkiller.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearOutlaw={
+      "_id": "op68326y3nmFE4Oi",
+      "name": "Flashy Outlaw Gear",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Dashing coat with exposed holster: Add [ad] to all Charm and Coercion checks.<p>Fancy Cape or Hat: Remove [se] from all social checks.`,
+        "attributes": {
+			"attr1556306079330": {
+				"modtype": "Skill Add Advantage",
+				"value": 1,
+				"mod": "Charm"
+			},
+			"attr1666306079330": {
+				"modtype": "Skill Add Advantage",
+				"value": 1,
+				"mod": "Coercion"
+			}		
+		},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearDefensiveMagic={
+      "_id": "op67666y3nmFE4Oj",
+      "name": "Defensive Magic User Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Magically Enhanced Robes: 3 defense<p>Augmenting Magical Implement: May add the Additional Target and Additional Summon effects without increasing the difficulty of a spell.<p>+2 damage to attack spells.<p>Supernatural healing: Once per session, increase wounds healed from Healing spell by +3.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+let gearOffensiveMagic={
+      "_id": "op64444y3nmFE4Oi",
+      "name": "Heavy Ranged Warrior Equipment",
+      "type": "gear",
+      "img": "icons/svg/item-bag.svg",
+      "data": {
+        "description": `Robes: +1 defense.<p>Offensive Implement: The first Range effect on any spell is free. +4 damage to attack spells.`,
+        "attributes": {},
+        "quantity": {
+          "value": 1,
+          "type": "Number",
+          "label": "Quantity",
+          "abrev": "Qty"
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "price": {
+          "value": 0,
+          "type": "Number",
+          "label": "Price",
+          "adjusted": 0
+        },
+        "rarity": {
+          "value": 0,
+          "type": "Number",
+          "label": "Rarity",
+          "adjusted": 0,
+          "isrestricted": false
+        },
+        "itemattachment": [],
+        "itemmodifier": []
+      },
+      "effects": []
+};
+
+
+
 // define talents and abilities
 
 
@@ -678,7 +899,7 @@ function makeArmor (aName,aSoak,mDef,rDef) {
 }
 
 function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
-	let wDamMod;
+	let wDamMod = 0;
 	let wChar = "";
 	if (isBrawn) {
 		wChar = "Brawn";
@@ -1719,46 +1940,46 @@ let dialogEditor = new Dialog({
 						makeWeapon("Teeth and claws",2,3,"Engaged","Brawl",true,[accurate1,knockdown]);
 						break;
 					case "largeBeast":
-						makeWeapon("Gaping maw or razor claws",4+chars[0],2,"Engaged","Brawl",true,[vicious3]);
+						makeWeapon("Gaping maw or razor claws",4,2,"Engaged","Brawl",true,[vicious3]);
 						makeWeapon("Tentacles or thundering hooves",5+chars[0],4,"Engaged","Brawl",true,[knockdown,concussive1]);
 						updateChallenge(1,0,0);
 						break;
 					case "laborer":
-						makeWeapon("Large farming implement or tool",3+chars[0],5,"Engaged",meleeHeavy,true,[cumbersome3]);
+						makeWeapon("Large farming implement or tool",3,5,"Engaged",meleeHeavy,true,[cumbersome3]);
 						makeArmor("Heavy Clothes",1,0,0);
 						break;
 					case "citizen":
 						makeWeapon("Fists",chars[0],6,"Engaged","Brawl",true,[disorient1,knockdown]);
 						break;
 					case "blueCollar":
-						makeWeapon("Improvised brawling weapon",1+chars[0],5,"Engaged","Brawl",true,[disorient2,inferior]);
+						makeWeapon("Improvised brawling weapon",1,5,"Engaged","Brawl",true,[disorient2,inferior]);
 						makeArmor("Heavy clothing",1,0,0);
 						updateChallenge(0,0,1);
 						break;
 					case "traveler":
-						makeWeapon("Walking staff",2+chars[0],4,"Engaged",meleeHeavy,true,[defensive1,disorient2]);
+						makeWeapon("Walking staff",2,4,"Engaged",meleeHeavy,true,[defensive1,disorient2]);
 						makeArmor("Heavy cloak",0,1,1);
 						gear.push(gearTraveler);
 						break;
 					case "criminal":
-						makeWeapon("Concealable melee weapon",1+chars[0],2,"Engaged",meleeLight,true,[pierce2]);
+						makeWeapon("Concealable melee weapon",1,2,"Engaged",meleeLight,true,[pierce2]);
 						makeArmor("Dark clothing",0,2,2);
 						gear.push(gearCriminal);
 						updateChallenge(1,0,1);
 						break;
 					case "doctor":
-						makeWeapon("Sharp medical tool",chars[0],1,"Engaged",meleeLight,true,[]);
+						makeWeapon("Sharp medical tool",0,1,"Engaged",meleeLight,true,[]);
 						gear.push(gearDoctor);
 						updateChallenge(0,0,1);
 						break;
 					case "noble":
-						makeWeapon("Dueling weapon",2+chars[0],3,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("Dueling weapon",2,3,"Engaged",meleeLight,true,[defensive1]);
 						gear.push(gearNoble);
 						updateChallenge(0,1,0);
 						break;
 					case "basicRanged":
 						makeWeapon("Two-handed ranged weapon",8,3,"Long",rangedHeavy,false,[]);
-						makeWeapon("One-handed melee weapon",2+chars[0],3,"Engaged",meleeLight,true,[vicious1]);
+						makeWeapon("One-handed melee weapon",2,3,"Engaged",meleeLight,true,[vicious1]);
 						makeArmor("Reinforced uniform or light armor",1,0,0);
 						gear.push(gearBasicRanged);
 						updateChallenge(2,0,0);
@@ -1771,16 +1992,16 @@ let dialogEditor = new Dialog({
 						updateChallenge(4,0,0);
 						break;
 					case "basicMelee":
-						makeWeapon("One-handed defensive melee weapon",2+chars[0],4,"Engaged",meleeLight,true,[defensive1]);
-						makeWeapon("Shield",chars[0],6,"Engaged",meleeLight,true,[defensive1,deflection1,inaccurate1,knockdown]);
+						makeWeapon("One-handed defensive melee weapon",2,4,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("Shield",0,6,"Engaged",meleeLight,true,[defensive1,deflection1,inaccurate1,knockdown]);
 						makeArmor("Medium Armor",2,0,0);
 						makeArmor("Defensive Weapon",0,1,0);
 						makeArmor("Shield",0,1,1);
 						updateChallenge(1,0,0);
 						break;
 					case "heavyMelee":
-						makeWeapon("Two-handed Melee Weapon",4+chars[0],3,"Engaged",meleeHeavy,true,[cumbersome3,pierce2,vicious1]);
-						makeWeapon("One-handed Versatile Weapon",3+chars[0],2,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("Two-handed Melee Weapon",4,3,"Engaged",meleeHeavy,true,[cumbersome3,pierce2,vicious1]);
+						makeWeapon("One-handed Versatile Weapon",3,2,"Engaged",meleeLight,true,[defensive1]);
 						makeWeapon("Shield",chars[0],6,"Engaged",meleeLight,true,[defensive1,deflection1,inaccurate1,knockdown]);
 						makeArmor("Defensive Weapon",0,1,0);
 						makeArmor("Shield",0,1,1);
@@ -1788,8 +2009,52 @@ let dialogEditor = new Dialog({
 						updateChallenge(2,0,0);
 						break;
 					case "versatileWarrior":
-						makeWeapon("One-handed Versatile Weapon",3+chars[0],2,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("One-handed Versatile Weapon",3,2,"Engaged",meleeLight,true,[defensive1]);
+						makeWeapon("One-handed Ranged Weapon",5,3,"Medium",rangedLight,false,[]);
+						makeArmor("Reinforced Clothing",1,1,1);
+						updateChallenge(1,0,0);
 						break;
+					case "adventurer":
+						makeWeapon("One-handed Ranged Weapon",6,3,"Medium",rangedLight,false,[accurate1]);
+						makeWeapon("Backup Brawling Weapon",1,4,"Engaged","Brawl",true,[disorient3]);
+						makeArmor("Leather Vest",1,0,0);
+						updateChallenge(1,0,0);
+						break;
+					case "bountyHunter":
+						makeWeapon("Short-ranged Entangling Weapon",4,5,"Short",rangedHeavy,false,[disorient3,ensnare3,limitedAmmo1]);
+						makeWeapon("Stunning Melee Weapon",3,5,"Engaged",meleeLight,true,[stun4,stunDamage]);
+						makeArmor("Medium Armor",2,0,0);
+						updateChallenge(1,0,0);
+						break;
+					case "gameHunter":
+						makeWeapon("Long-ranged Hunting Weapon",9,3,"Extreme",rangedHeavy,false,[accurate1,limitedAmmo2]);
+						makeArmor("Camouflage",0,2,2);
+						gear.push(gearGameHunter);
+						updateChallenge(2,0,0);
+						break;
+					case "lawEnforcement":
+						makeWeapon("One-handed Ranged Weapon",5,3,"Medium",rangedLight,false,[]);
+						makeWeapon("One-handed bludgeoning weapon",3,4,"Engaged",meleeLight,true,[disorient2]);
+						makeArmor("Light Armor",1,0,0);
+						gear.push(gearLEO);
+						updateChallenge(1,0,0);
+						break;
+					case "outlaw":
+						makeWeapon("Intimidating Ranged Weapon",7,3,"Medium",rangedLight,false,[inaccurate1]);
+						makeArmor("Dashing Coat",1,0,0);
+						gear.push(gearOutlaw);
+						updateChallenge(1,1,0);
+						break;
+					case "defensiveMagic":
+						makeArmor("Magically Enhanced Robes",0,3,3);
+						gear.push(gearDefensiveMagic);
+						updateChallenge(1,0,2);
+						break;
+					case "offensiveMagic":
+						makeWeapon("One-handed Melee Weapon",3,2,"Engaged",meleeLight,true,[defensive1]);
+						makeArmor("Defensive Weapon",0,1,0);
+						gear.push(gearOffensiveMagic);
+						updateChallenge(1,0,1);
 					default:
 				}
 					
