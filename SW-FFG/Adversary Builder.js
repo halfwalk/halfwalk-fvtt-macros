@@ -11,12 +11,15 @@ let armor = [];
 let skillsArr = [];
 let skillsToMake = [];
 var skillsCS = [];
+let appendChallenge = true;
 const alch=0,astr=1,athl=2,comp=3,cool=4,coor=5,disc=6,driv=7,mech=8,medi=9,oper=10,perc=11,pilo=12,resi=13,ridi=14,skul=15,stea=16,stre=17,surv=18,vigi=19,arca=20,divi=21,prim=22,braw=23,gunn=24,mell=25,melh=26,mele=27,rang=28,ranl=29,ranh=30,charm=31,coer=32,dece=33,lead=34,nego=35,know=36;
 const skillsList = ["Alchemy","Astrocartography","Athletics","Computers","Cool","Coordination","Discipline","Driving","Mechanics","Medicine","Operating","Perception","Piloting","Resilience","Riding","Skulduggery","Stealth","Streetwise","Survival","Vigilance","Arcana","Divine","Primal","Brawl","Gunnery","Melee-Light","Melee-Heavy","Melee","Ranged","Ranged-Light","Ranged-Heavy","Charm","Coercion","Deception","Leadership","Negotiation","Knowledge"];
 let skillScores = [];
 let meleeHeavy,meleeLight,rangedHeavy,rangedLight;
 
 skillsList.forEach(()=> {skillScores.push(0);});
+
+let dialogOptions = { width: 600, resizable: true }
 
 // define weapon qualities
 
@@ -827,42 +830,100 @@ let gearOffensiveMagic={
       "effects": []
 };
 
-
-
 // define talents and abilities
 
+let talentAdversary = `Upgrade the difficulty of all combat checks targeting this character once per rank of Adversary.`;
+let talentAnimalCompanion = `Your character creates a bond with a single animal approved by your GM. This animal must be silhouette 0 (no larger than a mid-sized dog). The bond persists as long as your character chooses, although at your GM’s discretion, the bond may also be broken due to abusive treatment or other extenuating circumstances. As long as the bond persists, the animal follows your character, and you dictate the animal’s overall behavior (although, since the animal is only bonded with the character, not dominated, it may still perform inconvenient actions such as scratching furniture, consuming rations, and marking territory).<p>Once per round in structured encounters, your character may spend one maneuver to direct their animal in performing one action and one maneuver during your character’s turn. The animal must be within hearing and visual range of your character (generally medium range) to do this. Otherwise, the animal does not contribute to the encounter. The specifics of its behavior are up to you and your GM.<p>For every additional rank of Animal Companion your character has, increase the allowed silhouette of the companion by one (this may mean your character gets a new companion, or their companion grows in size). This talent can also change in flavor depending on the nature of your game setting. While an animal companion may make sense in many settings, in a futuristic setting it may make more sense for the animal to be a robot or drone, for example.`;
+let talentBarrelRoll = `Your character can only use this talent while piloting a starfighter or airplane of Silhouette 3 or less. When your vehicle suffers a hit from a ranged combat check, after damage is calculated but before armor is applied, your character may have their vehicle suffer 3 system strain to use this talent. Then, reduce the damage suf-fered by a number equal to their ranks in Piloting.`
+let talentBerserk = `Once per encounter, your character may use this talent. Until the end of the encounter or until they are incapacitated, your character adds [su][ad][ad] to all melee combat checks they make. However, opponents add [su] to all combat checks targeting your character. While berserk, your character cannot make ranged combat checks. At the end of the encounter (or when they are incapacitated), your character suffers 6 strain.`;
+let talentBrilliantCasting = `When your character casts a spell, you may spend one Story Point to use this talent to add [ad] equal to your character’s ranks in Knowledge to the results.`;
+let talentCleverRetort = `Once per encounter, your character may use this talent to add automatic [th][th] to another character’s social skill check.`;
+let talentCoordinatedAssault = `Once per turn, your character may use this talent to have a number of allies engaged with your character equal to your ranks in Leadership add [ad] to all combat checks they make until the end of your character’s next turn. The range of this talent increases by one band per rank of Coordinated Assault beyond the first.`;
+let talentDistinctiveStyle = `When making a Computers check to hack a system or break into a secured network, before rolling, your character may use this talent to add [su][su][th][th] to the results. If you are using the optional hacking rules on page 232 and your check generates [th][th], your GM should spend it on the I Know You! option in Table III.2-22 on page 234 of the Genesys Core Rulebook.`;
+let talentDualWielder = `Once per round, your character may use this talent to decrease the difficulty of the next combined combat check (see Two- Weapon Combat, on page 108) they make during the same turn by one.`;
+let talentDuelist = `Your character adds [boost] to their melee combat checks while engaged with a single opponent. Your character adds [setback] to their melee combat checks while engaged with three or more opponents.`;
+let talentElementalist = `When your character gains this talent, they must choose one of the following attack spell effects (and the element associated with it): Fir (fire), Ice (water), Impact (earth), or Lightning (air). Whenever your character casts an Attack spell, they always add the chosen effect to the spell without increasing the difficulty. However, they may never add any of the other three effects to a spell they cast.`;
+let talentExplosiveCasting = `When your character casts an attack spell, they treat the spell’s Blast quality as having a rating equal to twice your character’s ranks in Knowledge (instead of their ranks in Knowledge). When your character casts an Attack spell with the Blast effect, you may spend one Story Point to use this talent to trigger the spell’s Blast quality, instead of spending [advantage] (even if the attack misses).`;
+let talentFaceOfTheWild = `When your character casts the transform spell on themself using the Primal skill, you may spend a Story Point to have them use this talent to maintain the effects of the spell until the end of the encounter, without performing concentration maneuvers.`;
+let talentFieldCommander = `Your character may use this talent to make an Average ([difficulty][difficulty]) Leadership check. If successful, a number of allies equal to your character’s Presence may immediately suffer 1 strain to perform one maneuver (out of turn). If there are any questions as to which allies take their maneuvers first, your character is the final arbiter.`;
+let talentFlickerStep = `When your character casts a spell using the Arcane skill, they may use this talent to spend [advantage][advantage][advantage] or [triumph] to instantly vanish and reappear at any location within long range.`;
+let talentGrenadier = `When your character makes a ranged combat check with a weapon that has the Blast item quality, you may spend one Story Point to use this talent to trigger the weapon’s Blast quality, instead of spending [advantage] (even if the attack misses). In addition, your character treats grenades as having a range of medium.`;
+let talentHamstringShot = `Once per round, your character may use this talent to perform a ranged combat check against one non-vehicle target within range of the weapon used. If the check is successful, halve the damage inflicted by the attack (before reducing damage by the target’s soak). The target is immobilized until the end of its next turn.`;
+let talentImprovedFieldCommander = `Your character must have purchased the Field Commander talent to benefit from this talent. When your character uses the Field Commander talent, your character affects a number of allies equal to twice the character’s Presence. In addition, you may spend [triumph] to allow one ally to suffer 1 strain to perform an action, instead of a maneuver.`;
+let talentImprovedInspiringRhetoric = `Your character may use this talent to make an Average ([difficulty][difficulty]) Leadership check. For each [success] the check generates, one ally within short range heals one strain. For each [advantage], one ally benefiting from Inspiring Rhetoric heals one additional strain. <p>Allies affected by your character’s Inspiring Rhetoric add [boost] to all skill checks they make for a number of rounds equal to your character’s ranks in Leadership.`;
+let talentImprovedParry = `Your character must have purchased the Parry talent to benefit from this talent. When your character suffers a hit from a melee combat check and uses Parry to reduce the damage from that hit, after the attack is resolved, you may spend [despair] or [threat][threat][threat] from the attacker’s check to use this talent. Then, your character automatically hits the attacker once with a Brawl or Melee weapon your character is wielding. The hit deals the weapon’s base damage, plus any damage from applicable talents or abilities. Your character can’t use this talent if the original attack incapacitates them.`;
+let talentImprovedScathingTirade = `Your character may use this talent to make an Average ([difficulty][difficulty]) Coercion check. For each [success] the check generates, one enemy within short range suffers 1 strain. For each [advantage], one enemy affected by Scathing Tirade suffers 1 additional strain.<p>Enemies affected by your character’s Scathing Tirade add [setback] to all skill checks they make for a number of rounds equal to your character’s ranks in Coercion.`;
+let talentIndomitable = `Once per encounter, when your character would be incapacitated due to exceeding their wound or strain threshold, you may spend a Story Point to use this talent. Then, your character is not incapacitated until the end of their next turn. If your character reduces their strain or wounds to below their threshold before the end of their next turn, they are not incapacitated.`;
+let talentLuckyStrike = `When your character purchases this talent, choose one characteristic. After your character makes a successful combat check, you may spend one Story Point to use this talent to add damage equal to your character’s ranks in that characteristic to one hit of the combat check.`;
+let talentMaster = `When you purchase this talent for your character, choose one skill. Once per round, your character may suffer 2 strain to use this talent to reduce the difficulty of the next check they make using that skill by two, to a minimum of Easy ([difficulty]).`;
+let talentMasterfulCasting = `When your character casts a spell, they may use this talent to spend [triumph] to trigger up to three different qualities or spell effects instead of one. These qualities or spell effects must be ones that can be triggered by spend [advantage] or [triumph].`;
+let talentNatural = `When your character purchases this talent, choose two skills. Once per session, your character may use this talent to reroll one skill check that uses one of those two skills.`;
+let talentParry3 = `When your character suffers a hit from a melee combat check, after damage is calculated but before soak is applied (so immediately after Step 3 of Perform a Combat check, page 102), your character may suffer 3 strain to use this talent to reduce the damage of the hit by two plus their ranks in Parry. This talent can only be used once per hit, and your character needs to be wielding a Melee weapon.`;
+let talentQuickDraw = `Once per round on your character’s turn, they may use this talent to draw or holster an easily accessible weapon or item as an incidental. Quick Draw also reduces a weapon’s Prepare rating by one, to a minimum of one.`;
+let talentRuinousRepartee = `Once per encounter, your character may use this talent to make an opposed Charm or Coercion versus Discipline check targeting one character within medium range (or within earshot). If successful, the target suffers strain equal to twice your character’s Presence, plus one additional strain per [success]. Your character heals strain equal to the strain inflicted. If incapacitated due to this talent, the target could flee the scene in shame, collapse in a dejected heap, or throw themself at your character in fury, depending on your GM and the nature of your character’s witty barbs.`;
+let talentSecondWind4 = `Once per encounter, your character may use this talent to heal an amount of strain equal to their ranks in Second Wind.`;
+let talentStrengthOfFaith = `Once per session, your character may use this talent to add [success] equal to their ranks in Discipline and [advantage] equal to their ranks in Willpower to the results of the next Divine skill check they make during this turn.`;
+let talentSurgeon2 = `When your character makes a Medicine check to heal wounds, the target heals one additional wound per rank of Surgeon.`;
 
-function updateArmor (aName, aSoak) {
-	soak += aSoak;
-	armorName = aName;
-}
-
+/*
 async function makeSkill (skill, sRank) {
 	let sName = skillsList[skill];
 	let newSkill = {
-		
-		
-				
 				[sName]: {
 					rank: sRank,
 					groupskill: true,
 					careerskill: true
 				}
-			
-		
 	};
-		
-		
-	
-	
 	skillsToMake.push(newSkill);
 }
+*/
+
+function makeTalent(tName, tDesc, tAct, tRank) {
+	
+	let newTalent = {};
+	let isRanked = false;
+	
+	if (tRank > 0) 
+		isRanked = true;
+	
+	newTalent = {
+		name: tName,
+		type: "talent",
+		data: {
+			description: tDesc,
+			attributes: {},
+			activation: {
+				value: tAct,
+				type: "String",
+				label: "Activation"
+			},
+			ranks: {
+				ranked: isRanked,
+				current: tRank,
+				min: 0
+			},
+			isForceTalent: false,
+			isConflictTalent: false,
+			tier: "1",
+			trees: []
+		},
+		effects: [],
+		sort: 0
+	};
+	
+	talents.push(newTalent);
+}
+
+// challenge rating of adversary
 
 function updateChallenge(com,soc,gen) {
 	challenge[0] += com;
 	challenge[1] += soc;
 	challenge[2] += gen;
 }
+
+// build armor/defensive object and push to array for actor creation
 
 function makeArmor (aName,aSoak,mDef,rDef) {
 	
@@ -897,6 +958,8 @@ function makeArmor (aName,aSoak,mDef,rDef) {
 	}
 	armor.push(newArmor);
 }
+
+// build weapon object and push to array for actor creation
 
 function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 	let wDamMod = 0;
@@ -961,18 +1024,27 @@ function makeWeapon (wName,wDam,wCrit,wRange,wSkill,isBrawn,qualsList) {
 	weapons.push(newWeapon);
 }
 
+// check if actor already has rank in a skill, and if so, keep the highest rank
+
 function updateSkill(skill,rank) {
 	skillScores[skill] = Math.max(skillScores[skill],rank);
 }
 
+// create an actor sheet
+
 async function makeActor() {
+	
 	let STadj = 0;
 	if (isMinion) advType = "minion";
 	else advType = "character";
 	
 	if (isNemesis) STadj = ST;
 	let tokenName = advName;
-	advName = advName + " (" + challenge[0] + "/" + challenge[1] + "/" + challenge[2] + ")";
+	
+	if (appendChallenge) 
+		advName = advName + " (" + challenge[0] + "/" + challenge[1] + "/" + challenge[2] + ")";
+	
+	// if actor has ranks in a skill, mark it as a career skill (for minion purposes)
 	
 	skillScores.forEach((i)=> {
 		if (i > 0) 
@@ -980,6 +1052,7 @@ async function makeActor() {
 			skillsCS.push(true);
 		else skillsCS.push(false);
 		});
+			
 	let advData = {
 		name: advName,
 		type: advType,
@@ -1232,6 +1305,7 @@ async function makeActor() {
 		]
 		
 	};
+	
 	let actor = await Actor.create(advData);
 		
 } 
@@ -1239,6 +1313,17 @@ async function makeActor() {
 let dialogEditor = new Dialog({
     title: `Adversary Generator`,
     content: `
+	<style>
+	.row {
+		display: flex;
+	}
+	.column {
+		flex: 50%;
+		padding: 10px;
+	}
+	</style>
+	<div class="row">
+	<div class="column">
         <form>
 			<div class="form-group">
 				<label>Name</label>
@@ -1454,6 +1539,26 @@ let dialogEditor = new Dialog({
 			</div>
 				
         </form>
+		</div>
+		<div class="column">
+			<div class="row">
+			<div class="column">
+			<h2>Talents & Abilities</h2>
+			<div class = "form-group">
+				<input type="checkbox" id="adversary1" name="adversary1" value"yes">
+				<label for "adversary1">Adversary 1</label><br>
+				<input type="checkbox" id="adversary2" name="adversary2" value"yes">
+				<label for "adversary1">Adversary 2</label><br>
+				<input type="checkbox" id="adversary3" name="adversary3" value"yes">
+				<label for "adversary1">Adversary 3</label><br>
+				<input type="checkbox" id="animalCompanion" name="animalCompanion" value"yes">
+				<label for "adversary1">Animal Companion</label><br>
+				<input type="checkbox" id="barrelRoll" name="barrelRoll" value"yes">
+				<label for "adversary1">Barrel Roll</label><br>
+				</div>
+			</div>
+			</div>
+		</div>
         `,
         buttons: {
             okay: {
@@ -1473,7 +1578,7 @@ let dialogEditor = new Dialog({
 	close: html => {
 			
 			if (makeAdv) {
-			
+				let p = "Passive", aa = "Active (Action)", ai = "Active (Incidental)", am = "Active (Maneuver)", ao = "Active (Incidental, Out of Turn)";
 				let chosenArray = html.find('[name="charArray"]')[0].value;
 				let chosenDef = html.find('[name="defType"]')[0].value;
 				let chosenDef2 = html.find('[name="defType2"]')[0].value;
@@ -1496,6 +1601,30 @@ let dialogEditor = new Dialog({
 				let useSplitMelee = html.find('[name="splitMelee"]')[0].checked;
 				let useSplitRanged = html.find('[name="splitMelee"]')[0].checked;
 				
+				if ( html.find('[name="adversary1"]')[0].checked ) makeTalent("Adversary 1", talentAdversary, p,1); 
+				if ( html.find('[name="adversary2"]')[0].checked ) {makeTalent("Adversary 2", talentAdversary, p,2);updateChallenge(1,0,0);}
+				if ( html.find('[name="adversary3"]')[0].checked ) {makeTalent("Adversary 3", talentAdversary, p,3);updateChallenge(2,0,0);}
+				if ( html.find('[name="animalCompanion"]')[0].checked ) {
+					makeTalent("Animal Companion", talentAnimalCompanion, p,0);
+				updateChallenge(1,0,1); }
+				
+				if ( html.find('[name="barrelRoll"]')[0].checked ) {makeTalent("Barrel Roll", talentBarrelRoll, ai,0);updateChallenge(1,0,0);}
+				/*if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked )
+				if ( html.find('[name="adversary1"]')[0].checked ) */
+					
 				if (!useSplitMelee) {
 					meleeHeavy = "Melee";
 					meleeLight = "Melee";
@@ -1590,6 +1719,7 @@ let dialogEditor = new Dialog({
 				
 				// set defenses
 				
+				 
 				let x = [];
 				
 				if (chosenDef != "none") {x.push(chosenDef);}
@@ -2032,6 +2162,10 @@ let dialogEditor = new Dialog({
 						gear.push(gearGameHunter);
 						updateChallenge(2,0,0);
 						break;
+					case "pilot":
+						makeWeapon("Concealable Ranged Weapon",5,4,"Short",rangedLight,false,[]);
+						gear.push(gearPilot);
+						break;
 					case "lawEnforcement":
 						makeWeapon("One-handed Ranged Weapon",5,3,"Medium",rangedLight,false,[]);
 						makeWeapon("One-handed bludgeoning weapon",3,4,"Engaged",meleeLight,true,[disorient2]);
@@ -2057,28 +2191,7 @@ let dialogEditor = new Dialog({
 						updateChallenge(1,0,1);
 					default:
 				}
-					
-				/* console log for debug
-				
-				if (isMinion) {console.log("Minion");}
-				if (isRival) {console.log("Rival");}
-				if (isNemesis) {console.log("Nemesis");}
-				console.log("Name: " + advName);
-				console.log("Characteristic Array: " + chars);
-				console.log("Challenge: " + challenge);
-				console.log("Soak: " + soak);
-				console.log("WT: " + WT);
-				console.log("ST: " + ST);
-				console.log("Melee Defense: " + mDef);
-				console.log("Ranged Defense: " + rDef);
-				console.log(skillsToMake);
-				*/
-				
 				makeActor();
-				
-				
 			}
-			
-			
 		}
-}).render(true);
+},dialogOptions).render(true);
