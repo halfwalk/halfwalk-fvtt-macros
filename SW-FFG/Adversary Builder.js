@@ -1,3 +1,21 @@
+/*
+
+// BUILD A COMPENDIUM INDEX AND GET A SPECIFIC ITEM FROM IT
+
+let armor = await game.packs.get("world.test");
+const armorIndex = await game.packs.get('world.test').getIndex();
+
+async function getItem(name,pack) {
+	let index = pack.find(i => i.name === name);
+	let item = await pack.getDocument(index.id);
+	return item;
+}
+
+let leather = await getItem("Baazrag Leather",armorComp);
+console.log(leather);
+
+*/
+
 var chars;
 var challenge = [0,0,0];
 var makeAdv;
