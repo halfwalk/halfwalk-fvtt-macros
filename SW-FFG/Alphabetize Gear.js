@@ -25,10 +25,8 @@ else {
 		return 0;
 	});
 	
-	
 // now put the sorted array back on the actor
 	tActor.update({
 		"items": gearToSort
 	});
-
 }
