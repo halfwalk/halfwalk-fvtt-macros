@@ -1,12 +1,16 @@
-const characters = game.actors.filter(a => a.data.type === "character" && a.hasPlayerOwner);
+const characters = game.actors.filter(a => a.hasPlayerOwner);
 let charList = "", toDo = ""
 const itemTypes = ["Weapon","Armour","Talent","Gear"];
 
+
 for (let item of itemTypes) {
+	let plural = ""
+	if (item.at(item.length-1) != "r") plural = "s"
 	toDo += `
 		
 		<input type="checkbox" name="${item}" id="${item}" value="${item}">
-		<label for="${item}">${item}</label>
+		<label for="${item}">${item}${plural}</label>
+		<br>
 		`
 }
 
@@ -24,7 +28,7 @@ let dialogEditor = new Dialog({
 	<hr>
 	<br>
 	<div class="form-group">
-	<label>Things to sort</label>
+	<label>Things to sort</label><br>
 		${toDo}
 	</div>
 	<br>
