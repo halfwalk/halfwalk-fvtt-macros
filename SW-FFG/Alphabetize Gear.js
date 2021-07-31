@@ -9,13 +9,10 @@ if (tokens.length != 1) ui.notifications.error("Select a single token before run
 else {
     let tActor = token.actor;
     let gearList = tActor.items;
-	let gearListSpec = gearList.filter(i => i.data.type === "gear");
 
-// check if item is "gear" type. if so, add it to array and delete it from actor
-	for (let element of gearList) {
-		if (element.data.type === "gear") {
-			 gearToSort.push(element);
-			await element.delete() }
+	for (let element of gearList.filter(i => i.data.type === "gear")) {
+		gearToSort.push(element);
+		await element.delete();
 	}
 	
 // sort the items in the array alphabetically by item name
