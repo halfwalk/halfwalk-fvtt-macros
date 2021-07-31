@@ -2,7 +2,6 @@ const characters = game.actors.filter(a => a.data.type === "character" && a.hasP
 let charList = "", toDo = ""
 const itemTypes = ["Weapon","Armour","Talent","Gear"];
 
-
 for (let item of itemTypes) {
 	toDo += `
 		
@@ -39,6 +38,7 @@ let dialogEditor = new Dialog({
 			label: "Cancel"
 		}
 	},
+	default: "okay"
 }).render(true);
 
 async function doTheThing(html) {
@@ -49,9 +49,6 @@ async function doTheThing(html) {
 	for (let i of itemTypes) {
 		if (html.find(`[id="${i}"]`)[0].checked) itemsToDo.push(i.toLowerCase());
 	}
-	console.log(itemsToDo);
-	console.log(element);
-	
 	
 	// find the desired actor and perform the sorting
 	
