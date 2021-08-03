@@ -1,8 +1,9 @@
-// search tokens on canvas to see if they contain searchString; push token IDs to an array
+// search tokens on canvas to see if they contain searchString; push token objects to array
 
 const searchString = "Croc";
-let tokensToUse = [];
+let tokensToUse = canvas.tokens.objects.children.filter (i => i.data.name.includes(searchString));
 
-for (const tok of canvas.tokens.objects.children) {
-if (tok.data.name.includes(searchString)) tokensToUse.push(tok.id);
+for (let t of tokensToUse) {
+	// do something to each token, E.G.:
+	// await t.document.update({"hidden":false});
 }
