@@ -5,5 +5,6 @@ let tokensToUse = canvas.tokens.objects.children.filter (i => i.data.name.includ
 
 for (let t of tokensToUse) {
 	// do something to each token, E.G.:
-	// await t.document.update({"hidden":false});
+	// let hide = !t.data.hidden;
+	// await t.document.update({"hidden":hide});
 }
