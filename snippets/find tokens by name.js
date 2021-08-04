@@ -8,3 +8,12 @@ for (let t of tokensToUse) {
 	// let hide = !t.data.hidden;
 	// await t.document.update({"hidden":hide});
 }
+
+
+// find a single token with a specific name:
+
+const tokenName = "Croc";
+const tok = canvas.tokens.placeables.find(i => i.data.name === tokenName);
+
+// then do something with the token like:
+// await tok.actor.sheet.render(true);
