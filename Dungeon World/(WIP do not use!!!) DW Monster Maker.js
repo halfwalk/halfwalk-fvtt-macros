@@ -1,81 +1,64 @@
-let dialogOptions = {};
-let okay;
 
-/* monster data array
+var genHTML = "", bio, instinct,tags,moves;
+var dam = "", hp = 0, ac = 0;
 
-[0] = "name"
-[1] = hp
-[2] = ac
-[3] = "damage" (d6)
-[4] = "piercing"
-[5] = "special qualities"
-[6] = "biography"
-[7] = tags "[{\"value\":\blahblah\"},{\"value\":\blahblah2\"}]
-tagsString = blahblah, blahblah2 */
+// ['damage die', HP, 'tag']
+// [0] = large group, [1] = small group, [2] = lonesome
+let mStyles = [['1d6',3,'swarm'],['1d8',6,'group'],['1d10',12,'solitary']]
+
+// ['tag', 'tag', damage, HP]
+
+let mSizes = [['tiny','hand',-2,''],['small','close',0,0],['','close',0,0],['close','reach',1,4],['huge','reach',3,8],['titanic','',6,12]]
 
 
-async function makeMonster(mData) {
-	let formattedTags = "", formattedTagsString = "";
-	let monster = {
-		name: mData[0],
-		type: "npc",
-		img: "icons/svg/mystery-man.svg",
-		data: {
-			attributes: {
-				hp: {
-					value: data[1],
-					min: 0,
-					max: data[1]
-				},
-				ac: {
-					value: data[2],
-					base: data[2],
-					min: 0
-				},
-				damage: {
-					value: data[3],
-					misc: "",
-					piercing: data[4]
-				},
-				specialQualities: {
-					value: data[5]
-				}
-			},
-			details: {
-				biography: data[6]
-			},
-			tags: formattedTags,
-			tagsString: formattedTagsString
-		},
-		token: {
-			name: data[0]
+genHTML = `
+<div class = "form-group">
+	<label for="mName">What is it called?</label>
+	<input type="text" id="mName" name="mName"><br>
+	<label for="mStyle">How does it usually hunt or fight?</label>
+	<select id="mStyle" name="mStyle">
+		<option value="0">In large groups</option>
+		<option value="1">In small groups (2-5)</option>
+		<option value="2">All by its lonesome</option>
+	</select><br>
+	<label for="mSize">How big is it?</label>
+	<select id="mSize" name="mSize">
+		<option value="0">Smaller than a house cat</option>
+		<option value="1">Halfling-esque</option>
+		<option value="2">About human size</option>
+		<option value="3">As big as a cart</option>
+		<option value="4">Much larger than a cart</option>
+		<option value="5">Can devour ships or houses whole</option>
+	</select>
+</div>`
+
+
+
+
+let d = new Dialog({
+	title: "DW Monster Generator",
+	content: genHTML,
+	buttons: {
+		okay: {
+			icon: '<i class="fas fa-dragon"></i>',
+			label: "Generate",
+			callback: (html) => monsterGen(html)
 		}
-	};
-}
+	},
+	default: "okay"
+}).render(true);
+	
+	
+async function monsterGen(html) {
+	let name = html.find('[name="mName"]')[0].value;
+	let style = html.find('[name="mStyle"]')[0].value;
+	let size = html.find('[name="mSize"]')[0].value;
+	
+	hp += mStyles[style][1] + mSizes[size][3];
+	dam += `${mStyles[style][0]}${mSizes[size][2]}`
+	console.log(name);
+	console.log(hp);
+	console.log(dam);
+	// console.log(`${mStyles[style][0]} damage, ${mStyles[style][1]} base HP, ${mStyles[style][2]} tag`);
 
-let dialogEditor = new Dialog({
-    title: `Monster Maker`,
-    content: `
-	<div class="form-group">
-	</div>
-        `,
-        buttons: {
-            okay: {
-                label: `Create`,
-                callback: () => {
-                    okay = true;
-                }
-            },
-			cancel: {
-				label: `Cancel`,
-				callback: () => {
-					okay = false;
-				}
-			}
-		},
-	default: "okay",
-	close: html => {		
-		if (okay) { makeMonster();}
-	}
-},dialogOptions).render(true);
-			
+}
