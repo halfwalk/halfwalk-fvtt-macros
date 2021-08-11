@@ -47,8 +47,7 @@ let dialogEditor = new Dialog({
 			let rollText;					
 			let resultText;
 			let miss;
-			
-						
+					
 			switch (hasAdv) {
 				case "noAdv":
 					rollText = "1d6";

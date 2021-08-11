@@ -205,7 +205,7 @@ function dmgDieShift(die) {
 	else if (die == "1d6") return "1d8";
 	else if (die == "1d8") return "1d10";
 	else if (die == "1d10") return "1d12";
-	else if (die == "1d12") return "1d8+1d6"
+	else if (die == "1d12") return die;
 }
 
 function dmgDieDisadv(die) {
