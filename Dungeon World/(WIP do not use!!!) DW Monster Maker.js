@@ -11,8 +11,8 @@ var genQuals = [['devious',`It isn't dangerous because of the wounds it inflicts
 
 var atkQuals = [['vicious',`Its armaments are vicious and obvious`],['reach',`It lets the monster keep others at bay`],['weak',`Its armaments are small and weak`],['messy',`Its armaments can slice or pierce metal`],['ignores',`Armor doesn't help with the damage it deals (due to magic, size, etc.)`],['far',`It usually attacks at range (with arrows, spells, or other projectiles`];
 
-var genHTML = "", bio, instinct,moves;
-var dam = "", name, hp, ac, atk, quals;
+var genHTML = "",instinct,moves;
+var dam = "", name, hp, ac, atk, quals, pierce;
 var tags = [], quals = [];
 var tagsString = "", qualString = "";
 
