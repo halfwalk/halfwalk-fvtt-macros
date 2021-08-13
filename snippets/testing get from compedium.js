@@ -31,7 +31,8 @@ async function getFromComp(comp,thing) {
 
 	let x = comp.index.find(i => i.name === thing);
 	let y = await comp.getDocument(x._id);
-	itemsToAdd.push(y);
+	return y;
+	//itemsToAdd.push(y);
 
 }
 
