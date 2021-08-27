@@ -9,6 +9,22 @@ for (let p of game.items.filter(i=>i.type == "playbook")) {
 	}
 }
 
+await new Promise(resolve => {
+    new Dialog({
+        title: "Move Populator",
+		content: dialogContent,
+        buttons: {
+            okay: {
+                label: "Do It!",
+                callback: (html) => doTheThing(html)
+            }
+		}
+	},
+    close: () => resolve()
+    }).render(true);
+});
+
+
 // where playbook is an array of "move" type items
 async function populateMoves (mActor, moveSet) {
 	
