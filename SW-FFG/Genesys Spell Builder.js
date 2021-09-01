@@ -4,7 +4,6 @@ if (token) {
 const skillToUse = `Arcana`;
 
 const mActor = token.actor;
-let implementBonuses = [];
 
 // ** CHANGE THIS to the name of the knowledge skill used for magic **
 let knowledgeSkill = `Knowledge(Lore)`;
@@ -12,8 +11,6 @@ for (let t of mActor.itemTypes.talent) {
 	if (t.name == "Dark Insight") knowledgeSkill = `Knowledge(Forbidden)`;
 	else if (t.name == "Natural Insight") knowledgeSkill = `Knowledge(Natural)`;
 }
-
-
 
 // define variables used
 
@@ -24,15 +21,41 @@ var addedDiff = '';
 var dmgBonus = 0;
 var activeMods = [];
 var spellMods, spellInfo;
+var freeEffects = [];
 const spellRanges = ['Engaged','Short','Medium','Long','Extreme'];
 
-
-
 // check gear for magic implements
-// const gear = mActor.items.filter(i=>i.type=="gear").map(x=>x.name);
-// if (gear.includes("Magic Staff")) dmgBonus = 4;
-// else if (gear.includes("Magic Wand")) dmgBonus = 3;
-// else if (gear.includes("Magic Scepter")) dmgBonus = 2;
+const gear = mActor.items.filter(i=>i.type=="gear") // .map(x=>x.name);
+
+
+// get bonuses from implement
+// implement description must have: [implement] and [+X], where X is damage bonus
+// if there are free effects, must have: ['Effect Name']
+for (let g of gear) {
+	if (g.data.data.description.includes(`[implement]`)) {
+		console.log(g.name);
+		
+		// calc damage bonus, if any
+		let bonus = (g.data.data.description.match(/(\[\+)\d*/g));
+		if (bonus[0]) {
+			console.log(bonus[0].slice(2));
+			dmgBonus = parseInt(bonus[0].slice(2));
+		}
+		
+		let effMatches = (g.data.data.description.match(/(\['\w+\s?\w+'\])/g));
+		for (let e of effMatches) {
+		
+			freeEffects.push(e.slice(2,e.length-2));
+		}
+	}
+	console.log(freeEffects);
+}
+	
+
+/*
+if (gear.includes("Magic Staff")) dmgBonus = 4;
+else if (gear.includes("Magic Wand")) dmgBonus = 3;
+else if (gear.includes("Magic Scepter")) dmgBonus = 2; */
 
 // define dice symbol shorthand
 const pr = `<span class='dietype starwars proficiency'>c</span>`
@@ -219,16 +242,8 @@ if (spellMods) {
 			}
 		});
 	});
-	
-		// get data from implements
-	for (let g of mActor.itemTypes.gear) {
-	let currentBonus = [];
-	let desc = g.data.data.description;
-	if (desc.includes(`[implement]`)) {
-		dmgBonus = desc.match(/(\[\+.\])/g)[0].match(/\d/g)[0];
-	}	
 
-	let checkBoxes = makeCheckBoxes(spellMods,freeEffects);
+	let checkBoxes = makeCheckBoxes(spellMods);
 
 	let dialogContent = `
 		<style>
@@ -261,8 +276,8 @@ async function createSpell(html) {
 	// get used effects
 	let data;
 	let difficulty = spellInfo.diff;
-	let checks = document.getElementsByName('myCheckboxes');
-	for (let c of checks) {
+	let areChecked = document.getElementsByName('myCheckboxes');
+	for (let c of areChecked) {
 		if (c.checked) {
 			if (c.id != "range2" && c.id != "range3" && c.id != "size2" && c.id != "size3" && c.id != "sil2" && c.id != "sil3") {
 				data = getData(c.id,spellMods);
@@ -277,15 +292,12 @@ async function createSpell(html) {
 		}
 		
 	}
-	let freeChecks = document.getElementsByName('myFreeCheckboxes');
-	for (let c of freeChecks) {
+	let areCheckedFree = document.getElementsByName('myFreeCheckboxes');
+	for (let c of areCheckedFree) {
 		if (c.checked) {data = getData(c.id.slice(4),spellMods);
 		activeMods.push([data[1],data[3],0,data[0]]);}
 	}
 	console.log(activeMods);
-		
-}
-	
 	
 	// add empowered damage bonus
 	
@@ -363,12 +375,11 @@ function getData(name,arr) {
 }
 
 // make checkboxes based on chosen spell
-// arr = array of spellmods
-// freeEffects = array of free effects from implements
-function makeCheckBoxes(arr,freeEffects) {
+function makeCheckBoxes(arr) {
 	let checkBoxes = '';
 	let multiples;
 	for (let mod of arr) {
+		let check="";
 		if (!mod[5] || mod[5] == skill.value) {
 			if (mod[0] == 'Range') {
 				multiples = `<input class='spellBox' type="checkbox" name="myCheckboxes" id="range2" value="range2"><input class='spellBox' type="checkbox" name="myCheckboxes" id="range3" value="range3">`
@@ -378,8 +389,11 @@ function makeCheckBoxes(arr,freeEffects) {
 				multiples = `<input class='spellBox' type="checkbox" name="myCheckboxes" id="sil2" value="sil2"><input class='spellBox' type="checkbox" name="myCheckboxes" id="sil3" value="sil3">`
 			} else	multiples = ``;
 			let modNoSpace = mod[0].replace(/\s/g, '');
+			for (let f of freeEffects) {
+				if (mod[0] == f) check="checked";
+			}
 			checkBoxes += `	
-				<tr><td><input class='freeSpellBox' type="checkbox" name="myFreeCheckboxes" id="${'free'+modNoSpace}" value = "${'free'+modNoSpace}"></td><td>
+				<tr><td><input class='freeSpellBox' type="checkbox" name="myFreeCheckboxes" id="${'free'+modNoSpace}" value = "${'free'+modNoSpace}" ${check}></td><td>
 				<input class='spellBox' type="checkbox" name="myCheckboxes" id="${modNoSpace}" value="${modNoSpace}">${multiples}</td>
 				<td><b>${mod[0]}</b></td><td>${mod[1]}</td> <td>+${difficulty(mod[2])}</td>
 				</tr>`;
