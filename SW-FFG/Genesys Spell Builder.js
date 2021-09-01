@@ -1,11 +1,22 @@
+if (token) {
+
 // ** CHANGE THIS to the name of your magic skill **
 const skillToUse = `Arcana`;
 
+const mActor = token.actor;
+let implementBonuses = [];
+
 // ** CHANGE THIS to the name of the knowledge skill used for magic **
-const knowledgeSkill = `Knowledge(Lore)`;
+let knowledgeSkill = `Knowledge(Lore)`;
+for (let t of mActor.itemTypes.talent) {
+	if (t.name == "Dark Insight") knowledgeSkill = `Knowledge(Forbidden)`;
+	else if (t.name == "Natural Insight") knowledgeSkill = `Knowledge(Natural)`;
+}
+
+
 
 // define variables used
-const mActor = token.actor;
+
 var knowledge = mActor.data.data.attributes[knowledgeSkill].value;
 const skill = mActor.data.data.skills[skillToUse];
 const stat = mActor.data.data.attributes[skill.characteristic];
@@ -15,11 +26,13 @@ var activeMods = [];
 var spellMods, spellInfo;
 const spellRanges = ['Engaged','Short','Medium','Long','Extreme'];
 
+
+
 // check gear for magic implements
-const gear = mActor.items.filter(i=>i.type=="gear").map(x=>x.name);
-if (gear.includes("Magic Staff")) dmgBonus = 4;
-else if (gear.includes("Magic Wand")) dmgBonus = 3;
-else if (gear.includes("Magic Scepter")) dmgBonus = 2;
+// const gear = mActor.items.filter(i=>i.type=="gear").map(x=>x.name);
+// if (gear.includes("Magic Staff")) dmgBonus = 4;
+// else if (gear.includes("Magic Wand")) dmgBonus = 3;
+// else if (gear.includes("Magic Scepter")) dmgBonus = 2;
 
 // define dice symbol shorthand
 const pr = `<span class='dietype starwars proficiency'>c</span>`
@@ -141,10 +154,12 @@ var spellsList = [areaInfo,attackInfo,augmentInfo,barrierInfo,conjureInfo,curseI
 
 // spellMods[0] = 'Name'
 // spellMods[1] = 'Description'
-// spellMods[2] = difficulty
-// spellMods[3] = activeCost
-// spellMods[4] = 'NameNoSpace' (serves as ID
-// spellMods[5] = 'Skill' (exclusive)
+// spellMods[2] = difficulty (integer, optional)
+// spellMods[3] = activationCost (integer, optional)
+// spellMods[4] = 'NameNoSpace' (serves as ID)
+// spellMods[5] = (optional: if exclusive to a skill)'Skill'
+
+// EXAMPLE: ['Blast',`Blast ${knowledge}`,1,2,,]
 
 let attackMods = [['Blast',`Blast ${knowledge}`,1,2],['Close',`Engaged range`,1],['Deadly',`Crit 2, Vicious ${knowledge}`,1],['Fire',`Burn ${knowledge}`,1,2],[`Holy`,`Each ${su} is +2 dmg vs bane`,1,,,'Divine'],['Ice',`Ensnare ${knowledge}`,1,2],['Impact',`Knockdown, Disorient ${knowledge}` ,1,2],['Lightning',`Stun ${knowledge}, Auto-Fire`,1,2],['Manipulative',`Move target 1 band`,1,1],['Non-Lethal',`Stun Damage`,1],['Range',`+1 Range Band`,1],['Destructive',`Sunder, Pierce ${knowledge}`,2],['Empowered',`+${stat.value} damage (increase blast to short)`,2],['Poisonous',`Save (${di+di+di}) Resilience, ${knowledge} Wounds/Strain`,2]];
 
@@ -158,9 +173,9 @@ let conjureMods = [['Additional Summon',`Summon 1 more item, plus one extra per 
 
 let curseMods = [['Enervate',`If target suffers strain, suffers +1 strain`,1],['Marked',`Attacks against target do +1 damage`,1],['Misfortune',`After target makes check, change one ${se} to a face displaying ${fa}`,1],['Range',`+1 range band`,1],['Slow',`Target must spend 2 maneuvers to move a range band`,1],['Additional Target',`One extra target, plus one per ${ad+ad} spent`,2,,'AdditionalTarget'],['Alternate Penalty',`Target suffers some other narrative setback instead of normal spell effect`,2,,'AlternatePenalty'],['Despair',`Target's WT and ST reduced by ${knowledge}; cannot use Additional Target`,2,,,'Divine'],['Doom',`After target makes check, change any die not displaying ${tr} or ${de} to a different face`,2,,,'Arcana'],['Paralyzed',`Target is staggered; cannot use Additional Target`,3]];
 
-let dispelMods = [['Range',`+1 range band`,1],['Additional Target',`One extra target, plus one per ${ad} spent`,2,,'AdditionalTarget'],['Nullify',`Remove a magic item's magical properties for ${knowledge} rounds`,2]]
+let dispelMods = [['Range',`+1 range band`,1],['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Nullify',`Remove a magic item's magical properties for ${knowledge} rounds`,2]]
 
-let healMods = [['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Range',`+1 range band`,1],['Restoration',`End one ongoing status effect (disoriented, staggered, immobilized, poisoned)`,1],['Heal Critical',`Heal one critical injury`,2,,'HealCritical'],['Revive Incapacitated',`Can target incapacitated character`,2,,'ReviveIncapacitated'],['Transferrence',`Caster can suffer up to ${knowledge} strain to heal 1 extra wound per strain`,2],['Resurrection',`Can target character who died during this encounter. On success, target has wounds equal to WT; if failure, no more attempts allowed`,4]]
+let healMods = [['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Range',`+1 range band`,1],['Restoration',`End one ongoing status effect (disoriented, staggered, immobilized, poisoned)`,1],['Heal Critical',`Heal one critical injury`,2,,'HealCritical'],['Reciprocal Heal',`Caster also heals the same amount of wounds/strain as target`,2,,'ReciprocalHeal'],['Revive Incapacitated',`Can target incapacitated character`,2,,'ReviveIncapacitated'],['Transferrence',`Caster can suffer up to ${knowledge} strain to heal 1 extra wound per strain`,2],['Resurrection',`Can target character who died during this encounter. On success, target has wounds equal to WT; if failure, no more attempts allowed`,4,,,'Divine']]
 
 let maskMods = [['Additional Illusion',`Create one extra illusion, plus one per ${ad+ad} spent`,1,,'AdditionalIllusion'],['Blur',`Add ${th} to combat checks against character`,1],['Mirror Image',`Create multiple images. Target may spend ${th+th+th} or ${de} from combat checks targeting them to have the attack harmlessly hit mirror image instead`,1,,'MirrorImage'],['Range',`+1 range band`,1],['Realism',`+1 difficulty to determine false nature of illusion, +1 extra per ${ad+ad} spent. Can also fool smell, taste, or touch`,1],['Size',`+1 Silhouette`,1],['Disguise',`Alter target's entire appearance. Can spend ${ad+ad} to alter sounds or smells as well`,2],['Terror',`Characters who don't know it's an illusion make <b>Hard (${di+di+di}) Discipline</b> (Fear) check. Suffer 2 strain per ${th} and, if failure, unable to approach illusion`,2],['Invisibility',`Target becomes invisible`,3]]
 
@@ -195,8 +210,8 @@ if (spellMods) {
 				else if (this.id == "sil2" || this.id == "sil3") addedDiff = `${di}`;
 				else if (getData(this.id,spellMods)[2] == 1) addedDiff = `${di}`;
 				else if (getData(this.id,spellMods)[2] == 2) addedDiff = `${di+di}`;
-				else if (getData(this.id,spellMods)[2] == 3) addedDiff = `${di + di+di}`;
-				else if (getData(this.id,spellMods)[2] == 4) addedDiff = `${di + di + di+di}`;
+				else if (getData(this.id,spellMods)[2] == 3) addedDiff = `${di+di+di}`;
+				else if (getData(this.id,spellMods)[2] == 4) addedDiff = `${di+di+di+di}`;
 				else addedDiff = '';
 				 $(".diffTracker").append(`<span class="${this.id}">${addedDiff}</span>`);
 			} else {
@@ -204,8 +219,16 @@ if (spellMods) {
 			}
 		});
 	});
+	
+		// get data from implements
+	for (let g of mActor.itemTypes.gear) {
+	let currentBonus = [];
+	let desc = g.data.data.description;
+	if (desc.includes(`[implement]`)) {
+		dmgBonus = desc.match(/(\[\+.\])/g)[0].match(/\d/g)[0];
+	}	
 
-	let checkBoxes = makeCheckBoxes(spellMods);
+	let checkBoxes = makeCheckBoxes(spellMods,freeEffects);
 
 	let dialogContent = `
 		<style>
@@ -220,7 +243,6 @@ if (spellMods) {
 		<form class="spellBox"><table style="text-align:center" border="solid"><th>Free</th><th>Add</th><th>Effect</th><th>Description</th><th>Difficulty</th>
 			${checkBoxes} </table></form>`
 		
-
 		new Dialog({
 			title: `${spellInfo.name} Options`,
 			content: dialogContent,
@@ -235,24 +257,35 @@ if (spellMods) {
 }
 
 // create spell
-async function createSpell(data) {
+async function createSpell(html) {
 	// get used effects
+	let data;
 	let difficulty = spellInfo.diff;
-	let areChecked = document.getElementsByName('myCheckboxes');
-	for (let c of areChecked) {
-		if (c.id != "range2" && c.id != "range3" && c.id != "size2" && c.id != "size3" && c.id != "sil2" && c.id != "sil3") {
-			let data = getData(c.id,spellMods);
-			if (c.checked) activeMods.push([data[1],data[3],data[2],data[0]]);
-		} else if (c.id == "range2" || c.id == "range3" ){
-			if (c.checked) activeMods.push([`+1 range rand`,,1,'Range']);
-		} else if (c.id == "size2" || c.id == "size3" ) {
-			if (c.checked) activeMods.push([`+1 size of effect`,,1,'Size']);
-		} else if (c.id == "sil2" || c.id == "sil3" ) {
-			if (c.checked) activeMods.push([`+1 silhouette`,,1,'Silhouette Increase']);
+	let checks = document.getElementsByName('myCheckboxes');
+	for (let c of checks) {
+		if (c.checked) {
+			if (c.id != "range2" && c.id != "range3" && c.id != "size2" && c.id != "size3" && c.id != "sil2" && c.id != "sil3") {
+				data = getData(c.id,spellMods);
+				activeMods.push([data[1],data[3],data[2],data[0]]);
+			} else if (c.id == "range2" || c.id == "range3" ){
+				activeMods.push([`+1 range rand`,,1,'Range']);
+			} else if (c.id == "size2" || c.id == "size3" ) {
+				activeMods.push([`+1 size of effect`,,1,'Size']);
+			} else if (c.id == "sil2" || c.id == "sil3" ) {
+				activeMods.push([`+1 silhouette`,,1,'Silhouette Increase']);
+			}
 		}
-			
 		
 	}
+	let freeChecks = document.getElementsByName('myFreeCheckboxes');
+	for (let c of freeChecks) {
+		if (c.checked) {data = getData(c.id.slice(4),spellMods);
+		activeMods.push([data[1],data[3],0,data[0]]);}
+	}
+	console.log(activeMods);
+		
+}
+	
 	
 	// add empowered damage bonus
 	
@@ -330,7 +363,9 @@ function getData(name,arr) {
 }
 
 // make checkboxes based on chosen spell
-function makeCheckBoxes(arr) {
+// arr = array of spellmods
+// freeEffects = array of free effects from implements
+function makeCheckBoxes(arr,freeEffects) {
 	let checkBoxes = '';
 	let multiples;
 	for (let mod of arr) {
@@ -344,7 +379,7 @@ function makeCheckBoxes(arr) {
 			} else	multiples = ``;
 			let modNoSpace = mod[0].replace(/\s/g, '');
 			checkBoxes += `	
-				<tr><td>Free</td><td>
+				<tr><td><input class='freeSpellBox' type="checkbox" name="myFreeCheckboxes" id="${'free'+modNoSpace}" value = "${'free'+modNoSpace}"></td><td>
 				<input class='spellBox' type="checkbox" name="myCheckboxes" id="${modNoSpace}" value="${modNoSpace}">${multiples}</td>
 				<td><b>${mod[0]}</b></td><td>${mod[1]}</td> <td>+${difficulty(mod[2])}</td>
 				</tr>`;
@@ -366,4 +401,5 @@ function makeButtons(magicSkill) {
 		}
 	}
 	return buttons;
+}
 }
