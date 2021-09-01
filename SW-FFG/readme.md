@@ -2,7 +2,7 @@
 
 Detects proper magic skill (based on presence of 'Dark Insight' talent).
 
-Detects implement for casting (if any). Currently limited to 1; will change.
+Detects implement for casting (if any). Currently limited to 1 (multiple implements will be combined; yikes! will change this to add implement selection to the first dialog)
 
 ### Implement Setup
 
