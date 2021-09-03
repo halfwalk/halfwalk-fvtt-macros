@@ -22,34 +22,38 @@ var dmgBonus = 0;
 var activeMods = [];
 var spellMods, spellInfo;
 var freeEffects = [];
+var disabledEffects = [];
 const spellRanges = ['Engaged','Short','Medium','Long','Extreme'];
 
 // check gear for magic implements
-const gear = mActor.items.filter(i=>i.type=="gear") // .map(x=>x.name);
+const gear = mActor.items.find(i=>i.type=="gear" && i.data.data.description.includes(`[implement]`))
 
 
 // get bonuses from implement
 // implement description must have: [implement] and [+X], where X is damage bonus
 // if there are free effects, must have: ['Effect Name']
-for (let g of gear) {
-	if (g.data.data.description.includes(`[implement]`)) {
+//for (let g of gear) {
+	let g = gear;
 		console.log(g.name);
 		
 		// calc damage bonus, if any
-		let bonus = (g.data.data.description.match(/(\[\+)\d*/g));
-		if (bonus[0]) {
+		 let bonus = (g.data.data.description.match(/(\[\+)\d*/g));
+		 if (bonus) {
 			console.log(bonus[0].slice(2));
 			dmgBonus = parseInt(bonus[0].slice(2));
-		}
-		
+		 }
+	
 		let effMatches = (g.data.data.description.match(/(\['\w+\s?\w+'\])/g));
+		if (effMatches) {
 		for (let e of effMatches) {
 		
 			freeEffects.push(e.slice(2,e.length-2));
 		}
-	}
+		}
+		
+	
 	console.log(freeEffects);
-}
+// }
 	
 
 /*
@@ -72,7 +76,7 @@ const ab = `<span class='dietype starwars ability'>d</span>`
 
 let attackInfo = {
 	name: 'Attack',
-	desc: `Select a target within short range (but not engaged). Attack has no set Critical rating; must use a ${tr} to inflict Critical.<p>Base Damage: ${stat.value + dmgBonus}, +1 per uncanceled ${su}<br>(casting stat + implement bonus)`,
+	desc: `<b>Range: </b> Short (not engaged)<p>Attack has no set Critical rating; must use a ${tr} to inflict Critical.<p>Base Damage: ${stat.value + dmgBonus}, +1 per uncanceled ${su}<br>(casting stat + implement bonus)`,
 	diff: 1,
 	callback: (html) => {spellMods=attackMods;spellInfo=attackInfo;},
 	skills: ['Arcana','Divine','Primal'],
@@ -80,7 +84,7 @@ let attackInfo = {
 }
 let areaInfo = {
 	name: 'Area',
-	desc: `Select a point within medium range. If successful, until end of next turn, all terrain within short range is considered difficult terrain.`,
+	desc: `<b>Range: </b>Medium<p><b>Concentration</b><p> If successful, until end of next turn, all terrain within short range of target point is considered difficult terrain.`,
 	diff: 2,
 	callback: (html) => {spellMods=areaMods;spellInfo=areaInfo;},
 	skills: ['Arcana','Divine','Primal'],
@@ -88,7 +92,7 @@ let areaInfo = {
 }
 let augmentInfo = {
 	name: 'Augment',
-	desc: `Select one engaged target (or self). If successful, until end of next turn, target increases ability of all skill checks by one. (in effect, add +${ab})`,
+	desc: `<b>Range: </b>Engaged or Self<p><b>Concentration</b><p> If successful, until end of next turn, target increases ability of all skill checks by one. (in effect, add +${ab})`,
 	diff: 2,
 	callback: (html) => {spellMods=augmentMods;spellInfo=augmentInfo;},
 	skills: ['Divine','Primal','Verse'],
@@ -96,7 +100,7 @@ let augmentInfo = {
 }
 let barrierInfo = {
 	name: 'Barrier',
-	desc: `Select one engaged target (or self). If successful, until end of next turn, reduce damage of all hits the target suffers by one, plus one per uncanceled ${su + su} beyond the first.`,
+	desc: `<b>Range: </b>Engaged or Self<p><b>Concentration</b><p> If successful, until end of next turn, reduce damage of all hits the target suffers by one, plus one per uncanceled ${su + su} beyond the first.`,
 	diff: 1,
 	callback: (html) => {spellMods=barrierMods;spellInfo=barrierInfo;},
 	skills: ['Arcana','Divine'],
@@ -104,7 +108,7 @@ let barrierInfo = {
 }
 let conjureInfo = {
 	name: 'Conjure',
-	desc: `If successful, target summons a simple tool with no moving parts, a one-handed melee weapon with no moving parts, or a minion no bigger than Silhouette 1. This appaers engaged with caster, and remains until end of caster's next turn.<p>If creature, it behaves in the best approximation of its natural instincts. It is not controlled by caster, and may even be hostile to them. It takes its turn immediately after caster.`,
+	desc: `<b>Range: </b>Engaged<p><b>Concentration</b><p>If successful, target summons a simple tool with no moving parts, a one-handed melee weapon with no moving parts, or a minion no bigger than Silhouette 1. This appaers engaged with caster, and remains until end of caster's next turn.<p>If creature, it behaves in the best approximation of its natural instincts. It is not controlled by caster, and may even be hostile to them. It takes its turn immediately after caster.`,
 	diff: 1,
 	callback: (html) => {spellMods=conjureMods;spellInfo=conjureInfo;},
 	skills: ['Arcana','Primal'],
@@ -112,7 +116,7 @@ let conjureInfo = {
 }
 let curseInfo = {
 	name: 'Curse',
-	desc: `Select one target in short range. If successful, until end of next turn, target decreases ability of all checks by one (in effect, remove ${ab} or downgrade).`,
+	desc: `<b>Range: </b>Short<p><b>Concentration</b><p> If successful, until end of next turn, target decreases ability of all checks by one (in effect, remove ${ab} or downgrade).`,
 	diff: 2,
 	skills: ['Arcana','Divine','Verse'],
 	callback: (html) => {spellMods=curseMods;spellInfo=curseInfo;},
@@ -120,7 +124,7 @@ let curseInfo = {
 }
 let dispelInfo = {
 	name: 'Dispel',
-	desc: `Select one target within short range that is under effects of a spell. If successful, the spell effects end immediately.`,
+	desc: `<b>Range: </b>Short<p>Select one target within short range that is under effects of a spell. If successful, the spell effects end immediately.`,
 	diff: 3,
 	skills: ['Arcana','Verse'],
 	callback: (html) => {spellMods=dispelMods;spellInfo=dispelInfo;},
@@ -128,7 +132,7 @@ let dispelInfo = {
 }
 let healInfo = {
 	name: 'Heal',
-	desc: `Select one engaged target who is not incapacitated. If successful, heal 1 wound per uncanceled ${su} and 1 strain per uncanceled ${ad}.`,
+	desc: `<b>Range: </b>Engaged<p>Select one engaged target who is not incapacitated. If successful, heal 1 wound per uncanceled ${su} and 1 strain per uncanceled ${ad}.`,
 	diff: 1,
 	skills: ['Divine','Primal','Verse'],
 	callback: (html) => {spellMods=healMods;spellInfo=healInfo;},
@@ -136,7 +140,7 @@ let healInfo = {
 }
 let maskInfo = {
 	name: 'Mask',
-	desc: `If successful, create illusion of a creature or object of Silhouette 1 or smaller. It appears within short range. Alternatively, the illusion changes the apperance of the caster or one Silhouette 1 (or smaller) target they are engaged with. The illusion cannot obscure the basic size and shape of target.<p>Illusions can generate light and sound, but cannot cause harm or interact with their environment in any way. They can be animated and move, as long as they are in range of the spell.<p>A keen observer can attempt to spot the false nature of an illusion with an <b>Average (${di+di}) Vigilance check</b> (or Perception, if they suspect they are being fooled), recognizing the illusion's nature upon success.`,
+	desc: `<b>Range: </b>Short<p><b>Concentration</b><p>If successful, create illusion of a creature or object of Silhouette 1 or smaller. It appears within short range. Alternatively, the illusion changes the apperance of the caster or one Silhouette 1 (or smaller) target they are engaged with. The illusion cannot obscure the basic size and shape of target.<p>Illusions can generate light and sound, but cannot cause harm or interact with their environment in any way. They can be animated and move, as long as they are in range of the spell.<p>A keen observer can attempt to spot the false nature of an illusion with an <b>Average (${di+di}) Vigilance check</b> (or Perception, if they suspect they are being fooled), recognizing the illusion's nature upon success.`,
 	diff:1,
 	skills: ['Arcana','Verse'],
 	callback: (html) => {spellMods=maskMods;spellInfo=maskInfo;},
@@ -144,7 +148,7 @@ let maskInfo = {
 }
 let mindInfo = {
 	name: 'Mind',
-	desc: `Select one engaged target. If successful, learn the simple surface thoughts of the target. The GM will determine what those thoughts are. The info may not be words that are easy to decipher, but could instead be feelings or flashes of imagery. At the end of spell's duration, target becomes aware they were under the effect of a spell, though not necessarily who cast it. They are aware someone is doing something to their mind, but how much they understand depends on the setting and the target.`,
+	desc: `<b>Range:</b> Engaged<p>If successful, learn the simple surface thoughts of the target. The GM will determine what those thoughts are. The info may not be words that are easy to decipher, but could instead be feelings or flashes of imagery. At the end of spell's duration, target becomes aware they were under the effect of a spell, though not necessarily who cast it. They are aware someone is doing something to their mind, but how much they understand depends on the setting and the target.`,
 	diff: 3,
 	skills: ['Verse'],
 	callback: (html) => {spellMods=mindMods;spellInfo=mindInfo;},
@@ -152,7 +156,7 @@ let mindInfo = {
 }
 let moveInfo = {
 	name: 'Move',
-	desc: `Select target of Silhouette 0 or 1 within short range (or self). If successful, move the target in one direction toward or away from your character up to one range band per uncanceled ${su+su}.`,
+	desc: `<b>Range:</b> Short<p><b>Concentration</b><p> Select target of Silhouette 0 or 1 (or self). If successful, move the target in one direction toward or away from your character up to one range band per uncanceled ${su+su}.`,
 	diff: 1,
 	skills: ['Arcana'],
 	callback: (html) => {spellMods=moveMods;spellInfo=moveInfo;},
@@ -167,7 +171,7 @@ let predictInfo = {
 }
 let transformInfo = {
 	name: 'Transform',
-	desc: `If successful, caster transforms into a Silhouette 0 animal. It must be a natural creature, subject to GM approval. <p> While transformed, adopt the physical appearance of the animal and gain the animal's characteristics, soak, wound threshold, and defense. The caster also gains the animal's abilities, equipment, and attacks.<p>Caster retains their own skills, talents, and strain threshold. They drop any gear they were carrying or wearing when they transformed.<p>If incapacitated, caster reverts back to normall form, healing all wounds suffered while transformed, but they do not heal any strain or Critical Injuries they suffered while transformed. If they were incapacitated while transformed, they are no longer incapacitated.`,
+	desc: `<b>Range: </b>Engaged (Self)<p><b>Concentration</b><p>If successful, caster transforms into a Silhouette 0 animal. It must be a natural creature, subject to GM approval. <p> While transformed, adopt the physical appearance of the animal and gain the animal's characteristics, soak, wound threshold, and defense. The caster also gains the animal's abilities, equipment, and attacks.<p>Caster retains their own skills, talents, and strain threshold. They drop any gear they were carrying or wearing when they transformed.<p>If incapacitated, caster reverts back to normall form, healing all wounds suffered while transformed, but they do not heal any strain or Critical Injuries they suffered while transformed. If they were incapacitated while transformed, they are no longer incapacitated.`,
 	diff: 2,
 	skills: ['Primal'],
 	callback: (html) => {spellMods=transformMods;spellInfo=transformInfo;}
@@ -319,6 +323,14 @@ async function createSpell(html) {
 		speaker: {alias: spellInfo.name},
 		content: message
 	});
+	
+	/*
+	// deduct 2 strain from caster if PC or Nemesis
+	// otherwise deduct 2 wounds
+	if (mActor.hasPlayerOwner || mActor.data.data.stats.strain.max > 5)
+		await mActor.update({"data.stats.strain.value": mActor.data.data.stats.strain.value+2});
+	else await mActor.update({"data.stats.wounds.value": mActor.data.data.stats.wounds.value+2});
+	*/
 }
 
 // convert num (integer) into string of difficulty symbols
@@ -380,6 +392,7 @@ function makeCheckBoxes(arr) {
 	let multiples;
 	for (let mod of arr) {
 		let check="";
+		let disabled="";
 		if (!mod[5] || mod[5] == skill.value) {
 			if (mod[0] == 'Range') {
 				multiples = `<input class='spellBox' type="checkbox" name="myCheckboxes" id="range2" value="range2"><input class='spellBox' type="checkbox" name="myCheckboxes" id="range3" value="range3">`
@@ -392,9 +405,12 @@ function makeCheckBoxes(arr) {
 			for (let f of freeEffects) {
 				if (mod[0] == f) check="checked";
 			}
+			for (let f of disabledEffects) {
+				if (mod[0] == f) disabled="disabled";
+			}
 			checkBoxes += `	
-				<tr><td><input class='freeSpellBox' type="checkbox" name="myFreeCheckboxes" id="${'free'+modNoSpace}" value = "${'free'+modNoSpace}" ${check}></td><td>
-				<input class='spellBox' type="checkbox" name="myCheckboxes" id="${modNoSpace}" value="${modNoSpace}">${multiples}</td>
+				<tr><td><input class='freeSpellBox' type="checkbox" name="myFreeCheckboxes" id="${'free'+modNoSpace}" value = "${'free'+modNoSpace}" ${check} ${disabled}></td><td>
+				<input class='spellBox' type="checkbox" name="myCheckboxes" id="${modNoSpace}" value="${modNoSpace}" ${disabled}>${multiples}</td>
 				<td><b>${mod[0]}</b></td><td>${mod[1]}</td> <td>+${difficulty(mod[2])}</td>
 				</tr>`;
 		}
