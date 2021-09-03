@@ -13,7 +13,6 @@ if (mActor) {
 
 	// whisper the built message to GM
 	let GM = game.users.find(i=>i.isGM);
-	console.log(messageData);
 	await ChatMessage.create({
 		content: messageData,
 	whisper: [GM.id]
