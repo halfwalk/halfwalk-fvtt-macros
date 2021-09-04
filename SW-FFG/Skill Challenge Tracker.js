@@ -11,11 +11,9 @@ let dialog = new Dialog({
 	content: checkboxes,
 	buttons: {
 			okay: {
-				label: "Done",
-				callback: ()=> console.log("Let's do it!")
+				label: "Done"
 			}
-		},
-         close: (html) => {}
+		}
 }).render(true);
 
 function makeChecks(num,type) {
