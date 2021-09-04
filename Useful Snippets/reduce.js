@@ -1,0 +1,1 @@
+let someString = someArray.reduce((acc, a) => acc += ``,'')
