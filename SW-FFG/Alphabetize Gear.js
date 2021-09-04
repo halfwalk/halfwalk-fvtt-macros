@@ -1,19 +1,16 @@
 const characters = game.actors.filter(a => a.hasPlayerOwner);
 let toDo = "", charList = ""
+
 const itemTypes = ["Weapon","Armour","Talent","Gear"];
+console.log(itemTypes);
 
 
 // build html for checkboxes from itemTypes array
 
 for (let item of itemTypes) {
-	let plural = ""
-
-	// pluralize labels for "weapons" and "talents"
-
-	if (item.at(item.length-1) != "r") plural = "s"
 	toDo += `	
 		<input type="checkbox" name="${item}" id="${item}" value="${item}">
-		<label for="${item}">${item}${plural}</label>
+		<label for="${item}">${item}</label>
 		<br>`
 }
 

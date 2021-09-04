@@ -26,40 +26,7 @@ var disabledEffects = [];
 const spellRanges = ['Engaged','Short','Medium','Long','Extreme'];
 
 // check gear for magic implements
-const gear = mActor.items.find(i=>i.type=="gear" && i.data.data.description.includes(`[implement]`))
-
-
-// get bonuses from implement
-// implement description must have: [implement] and [+X], where X is damage bonus
-// if there are free effects, must have: ['Effect Name']
-//for (let g of gear) {
-	let g = gear;
-		console.log(g.name);
-		
-		// calc damage bonus, if any
-		 let bonus = (g.data.data.description.match(/(\[\+)\d*/g));
-		 if (bonus) {
-			console.log(bonus[0].slice(2));
-			dmgBonus = parseInt(bonus[0].slice(2));
-		 }
-	
-		let effMatches = (g.data.data.description.match(/(\['\w+\s?\w+'\])/g));
-		if (effMatches) {
-		for (let e of effMatches) {
-		
-			freeEffects.push(e.slice(2,e.length-2));
-		}
-		}
-		
-	
-	console.log(freeEffects);
-// }
-	
-
-/*
-if (gear.includes("Magic Staff")) dmgBonus = 4;
-else if (gear.includes("Magic Wand")) dmgBonus = 3;
-else if (gear.includes("Magic Scepter")) dmgBonus = 2; */
+const gear = mActor.items.filter(i=>i.type=="gear" && i.data.data.description.includes(`[implement]`))
 
 // define dice symbol shorthand
 const pr = `<span class='dietype starwars proficiency'>c</span>`
@@ -198,7 +165,7 @@ let barrierMods = [['Range',`+1 range band`,1],['Additional Target', `One extra 
 
 let conjureMods = [['Additional Summon',`Summon 1 more item, plus one extra per ${ad+ad}`,1,'AdditionalSummon'],['Medium Summon',`Complicated tool (with moving parts), rival up to Silhouette 1, or two-handed melee weapon`,1,,'MediumSummon'],['Range',`+1 range band`,1],['Greater Summon',`Rival or animated object up to Silhouette 2; cannot use Additional Summon`,2,,'GreaterSummon'],['Summon Ally',`Summoned creature is friendly, obeys commands. Spend maneuver to direct (determine its action and maneuver)`,2,,'SummonAlly'],['Grand Summon', `Rival or animated object up to Silhouette 3; cannot use Additional summon`,3,,'GrandSummon','Primal']]
 
-let curseMods = [['Enervate',`If target suffers strain, suffers +1 strain`,1],['Marked',`Attacks against target do +1 damage`,1],['Misfortune',`After target makes check, change one ${se} to a face displaying ${fa}`,1],['Range',`+1 range band`,1],['Slow',`Target must spend 2 maneuvers to move a range band`,1],['Additional Target',`One extra target, plus one per ${ad+ad} spent`,2,,'AdditionalTarget'],['Alternate Penalty',`Target suffers some other narrative setback instead of normal spell effect`,2,,'AlternatePenalty'],['Despair',`Target's WT and ST reduced by ${knowledge}; cannot use Additional Target`,2,,,'Divine'],['Doom',`After target makes check, change any die not displaying ${tr} or ${de} to a different face`,2,,,'Arcana'],['Paralyzed',`Target is staggered; cannot use Additional Target`,3]];
+let curseMods = [['Enervate',`If target suffers strain, suffers +1 strain`,1],['Marked',`Attacks against target do +1 damage`,1],['Misfortune',`After target makes check, change one ${se} to a face displaying ${fa}`,1],['Range',`+1 range band`,1],['Slow',`Target must spend 2 maneuvers to move a range band`,1],['Additional Target',`One extra target, plus one per ${ad+ad} spent`,2,,'AdditionalTarget'],['Despair',`Target's WT and ST reduced by ${knowledge}; cannot use Additional Target`,2,,,'Divine'],['Doom',`After target makes check, change any die not displaying ${tr} or ${de} to a different face`,2,,,'Arcana'],['Paralyzed',`Target is staggered; cannot use Additional Target`,3]];
 
 let dispelMods = [['Range',`+1 range band`,1],['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Nullify',`Remove a magic item's magical properties for ${knowledge} rounds`,2]]
 
@@ -214,14 +181,34 @@ let predictMods = [['Quicksilver Reflexes',`Instead of asking question, add ${su
 
 let transformMods = [['Silhouette Increase',`+1 silhouette`,1,,'SilhouetteIncrease'],['Characteristic Retention',`Caster retains Intellect and Willpower while transformed`,1,,'CharacteristicRetention'],['Transform Gear',`Worn gear & wielded items change into natural markings (no benefit); when revert, gear is equipped as normal`,1,,'TransformGear'],['Dire Form',`+3 attack damage, +1 soak, +6 WT, +1 silhouette`,1,,'DireForm'],['Curse of the Wild',`Can target adversary instead of self`,3,,'CurseoftheWild']]
 
+
+let y = "";
+// let implementList = gear.reduce((acc, val,i) => acc += `<option value="${gear[i].id}">${gear[i].name}</option>`);
+for (let g of gear) {
+	y += `<option value="${g.id}">${g.name}</option>`
+}
+
+let firstDialogContent = `
+	<center><label>Implement: </label><center>
+	<select id="implement" name= "implement">
+		${y}
+	</select><br><br>`
+
 // show spell selection menu and wait for response
 await new Promise(resolve => {	
     let dialog = new Dialog({
         title: `${skill.value} Spells`,
+		content: firstDialogContent,
         buttons: makeButtons(skill.value),
-         close: (html) => resolve(html)
+		close: (html) => {
+			let chosenImplementId = html.find('[name="implement"]')[0].value;
+			let g = mActor.getEmbeddedDocument("Item",chosenImplementId);
+			getImplementBonuses(g);
+			resolve(html); }
     },{width: 600, height: "auto"}).render(true);
 });
+
+attackInfo.desc = `<b>Range: </b> Short (not engaged)<p>Attack has no set Critical rating; must use a ${tr} to inflict Critical.<p>Base Damage: ${stat.value + dmgBonus}, +1 per uncanceled ${su}<br>(casting stat [${stat.value}] + implement bonus [${dmgBonus}])`;
 
 // if a spell was chosen
 if (spellMods) {
@@ -301,7 +288,6 @@ async function createSpell(html) {
 		if (c.checked) {data = getData(c.id.slice(4),spellMods);
 		activeMods.push([data[1],data[3],0,data[0]]);}
 	}
-	console.log(activeMods);
 	
 	// add empowered damage bonus
 	
@@ -347,7 +333,7 @@ function difficulty(num) {
 function createMessageData(arr) {
 	// a[0]: effect name
 	// a[1]: effect cost
-	
+	console.log(arr)
 	let str = spellInfo.desc;
 	if (arr.length>0) {
 		let cost = '';
@@ -356,12 +342,13 @@ function createMessageData(arr) {
 			str += `<table style="text-align:center" border="solid"><tr><th>Effects</th><th>Activation</th></tr>`;
 			for (let a of arr) {
 				if (a[1]) {
-					console.log(a[1]);
-					cost = `(`
+					cost = ``
 					for (let i=0; i<a[1];i++) {
 						cost += `${ad}`;
+						
+						
 					}
-					cost += `)`
+					if (a[0].includes('Blast')) cost += ` (${ad+ad+ad} on miss)`
 				} else cost = ` `;
 				str += `<tr><td>${a[0]}</td><td>${cost}</td></tr>`;
 			}
@@ -432,4 +419,25 @@ function makeButtons(magicSkill) {
 	}
 	return buttons;
 }
+
+
+// calculates implement bonuses based on appropriate tags
+// checks item description for [implement], [+X] (where X is integer), and ['Effect Name']
+function getImplementBonuses(g) {
+	// calc damage bonus, if any
+	 let bonus = (g.data.data.description.match(/(\[\+)\d*/g));
+	 if (bonus) {
+		dmgBonus = parseInt(bonus[0].slice(2));
+	 }
+	
+	let effMatches = (g.data.data.description.match(/(\['\w+\s?\w+'\])/g));
+	if (effMatches) {
+		for (let e of effMatches) {
+			freeEffects.push(e.slice(2,e.length-2));
+		}
+	}
+		
+}
+
+
 }
