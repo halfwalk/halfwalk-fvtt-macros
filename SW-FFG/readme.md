@@ -28,10 +28,12 @@ Apply damage to selected token, with consideration for Soak and Pierce/Breach.
 
 ## Alphabetize Gear
 
-Sort items/talents alphabetically **for player-owned actors.**
+Sort items/talents alphabetically chosen **player-owned actor.**
 
 ## Damage Last Used Weapon
 
 Requires a selected token. Finds the most recent weapon roll from the selected token's actor, and damages the used weapon by one step.
 
-## 
+## Skill Challenge Tracker
+
+Based on David Shamp's "Skill Adventures" supplement. Just a simple visual aid for the GM to track the count of overall successes and overall failures.
