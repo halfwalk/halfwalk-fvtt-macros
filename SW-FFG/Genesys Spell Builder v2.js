@@ -49,14 +49,6 @@ let attackInfo = {
 	skills: ['Arcana','Divine','Primal'],
 	range: 1
 }
-let areaInfo = {
-	name: 'Area',
-	desc: `<b>Range: </b>Medium<p><b>Concentration</b><p> If successful, until end of next turn, all terrain within short range of target point is considered difficult terrain.`,
-	diff: 2,
-	callback: (html) => {spellMods=areaMods;spellInfo=areaInfo;},
-	skills: ['Arcana','Divine','Primal'],
-	range: 2
-}
 let augmentInfo = {
 	name: 'Augment',
 	desc: `<b>Range: </b>Engaged or Self<p><b>Concentration</b><p> If successful, until end of next turn, target increases ability of all skill checks by one. (in effect, add +${ab})`,
@@ -113,22 +105,6 @@ let maskInfo = {
 	callback: (html) => {spellMods=maskMods;spellInfo=maskInfo;},
 	range:1
 }
-let mindInfo = {
-	name: 'Mind',
-	desc: `<b>Range:</b> Engaged<p>If successful, learn the simple surface thoughts of the target. The GM will determine what those thoughts are. The info may not be words that are easy to decipher, but could instead be feelings or flashes of imagery. At the end of spell's duration, target becomes aware they were under the effect of a spell, though not necessarily who cast it. They are aware someone is doing something to their mind, but how much they understand depends on the setting and the target.`,
-	diff: 3,
-	skills: ['Verse'],
-	callback: (html) => {spellMods=mindMods;spellInfo=mindInfo;},
-	range:0
-}
-let moveInfo = {
-	name: 'Move',
-	desc: `<b>Range:</b> Short<p><b>Concentration</b><p> Select target of Silhouette 0 or 1 (or self). If successful, move the target in one direction toward or away from your character up to one range band per uncanceled ${su+su}.`,
-	diff: 1,
-	skills: ['Arcana'],
-	callback: (html) => {spellMods=moveMods;spellInfo=moveInfo;},
-	range:1
-}
 let predictInfo = {
 	name: 'Predict',
 	desc: `Ask one question about events that will unfold in the next 24 hours. If successful, GM must provide a truthful answer. However, the answer could be one that can be interpreted in multiple ways or is somewhat enigmatic. Whether the check succeeds or fails, the character may not make another prediction check about the same events for the remainder of the session.`,
@@ -153,7 +129,7 @@ let enchantmentInfo = {
 }
 
 // removed mindInfo
-var spellsList = [areaInfo,attackInfo,augmentInfo,barrierInfo,conjureInfo,curseInfo,dispelInfo,enchantmentInfo,healInfo,mindInfo,moveInfo,predictInfo,transformInfo];
+var spellsList = [attackInfo,augmentInfo,barrierInfo,conjureInfo,curseInfo,dispelInfo,enchantmentInfo,healInfo,predictInfo,transformInfo];
 
 // spellMods[0] = 'Name'
 // spellMods[1] = 'Description'
@@ -165,8 +141,6 @@ var spellsList = [areaInfo,attackInfo,augmentInfo,barrierInfo,conjureInfo,curseI
 // EXAMPLE: ['Blast',`Blast ${knowledge}`,1,2,,]
 
 let attackMods = [['Blast',`Blast ${knowledge}`,1,2],['Close',`Engaged range`,1],['Deadly',`Crit 2, Vicious ${knowledge}`,1],['Fire',`Burn ${knowledge}`,1,2],[`Holy`,`Each ${su} is +2 dmg vs bane`,1,,,'Divine'],['Ice',`Ensnare ${knowledge}`,1,2],['Impact',`Knockdown, Disorient ${knowledge}` ,1,2],['Lightning',`Stun ${knowledge}, Auto-Fire`,1,2],['Manipulative',`Move target 1 band`,1,1],['Non-Lethal',`Stun Damage`,1],['Range',`+1 Range Band`,1],['Destructive',`Sunder, Pierce ${knowledge}`,2],['Empowered',`+${stat.value} damage (increase blast to short)`,2],['Poisonous',`Save (${di+di+di}) Resilience, ${knowledge} Wounds/Strain`,2]];
-
-let areaMods = [['Reverse',`Turn difficult terrain into normal terrain, or impassable into difficult.`,1],['Concealment',`Create ${knowledge} concealment`,1],['Entangle',`Must make Average (${di + di}) Athletics or Coordination (GM choice) to move thru; caster can spend ${ad} to add ${se} to check`,1],['Range',`+1 range band`,1],['Size',`Area size is +1 range band`,1],['Wall',`Area becomes impassible`,2],['Dangerous Atmosphere',`Choose fire, acid, or corrosive. Area has that atmosphere, rating equal to ${su}`,2,,'DangerousAtmosphere']];
 
 let augmentMods = [['Divine Health',`Increase WT by ${knowledge} for duration`,1,,'DivineHealth','Divine'],['Haste',`Can perform 2nd maneuver (but still max 2/turn)`,1],['Primal Fury',`Add +${knowledge} to unarmed attacks, and gain Crit 3`,1,,'PrimalFury','Primal'],['Range',`+1 range band`,1],['Swift',`Ignore difficult terrain, cannot be immobilized`,1,1],['Additional Target',`One extra target, plus one per ${ad} spent`,2,,'AdditionalTarget']];
 
@@ -181,10 +155,6 @@ let dispelMods = [['Range',`+1 range band`,1],['Additional Target',`One extra ta
 let healMods = [['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Range',`+1 range band`,1],['Restoration',`End one ongoing status effect (disoriented, staggered, immobilized, poisoned)`,1],['Heal Critical',`Heal one critical injury`,2,,'HealCritical'],['Reciprocal Heal',`Caster also heals the same amount of wounds/strain as target`,2,,'ReciprocalHeal'],['Revive Incapacitated',`Can target incapacitated character`,2,,'ReviveIncapacitated'],['Transferrence',`Caster can suffer up to ${knowledge} strain to heal 1 extra wound per strain`,2],['Resurrection',`Can target character who died during this encounter. On success, target has wounds equal to WT; if failure, no more attempts allowed`,4,,,'Divine']]
 
 let maskMods = [['Additional Illusion',`Create one extra illusion, plus one per ${ad+ad} spent`,1,,'AdditionalIllusion'],['Blur',`Add ${th} to combat checks against character`,1],['Mirror Image',`Create multiple images. Target may spend ${th+th+th} or ${de} from combat checks targeting them to have the attack harmlessly hit mirror image instead`,1,,'MirrorImage'],['Range',`+1 range band`,1],['Realism',`+1 difficulty to determine false nature of illusion, +1 extra per ${ad+ad} spent. Can also fool smell, taste, or touch`,1],['Size',`+1 Silhouette`,1],['Disguise',`Alter target's entire appearance. Can spend ${ad+ad} to alter sounds or smells as well`,2],['Terror',`Characters who don't know it's an illusion make <b>Hard (${di+di+di}) Discipline</b> (Fear) check. Suffer 2 strain per ${th} and, if failure, unable to approach illusion`,2],['Invisibility',`Target becomes invisible`,3]]
-
-let mindMods = [['Gentle',`Target unaware`,1],['Intense Emotions',`Target filled with overwhelming emotion; may spend ${tr} to downgrade target's social checks once for duration`,1,,'IntenseEmotions'],['LearnMotivation',`Learn one fear, flaw, strength, or desire of GM's choice`,1,,'LearnMotivation'],['Range',`+1 range band`,1],['Learn Memory',`Experience one relevant memory of target, GM choice`,1,,'LearnMemory'],['Guide',`Target performs incidental of your choosing`,2],['Modify Memory',`Target forgets up to 1 hour per uncanceled ${su}. Can spend ${tr} to implant a different memory in its place`,2,,'ModifyMemory'],['Strain Attack',`Target suffers 1 strain per uncancelled ${su}`,2,,'StrainAttack'],['Dominate',`You determine target's next action and maneuvers. Must be defined when spell is cast`,3]]
-
-let moveMods = [['Additional Target',`One extra target, plus one per ${ad}`,1,,'AdditionalTarget'],['Range',`+1 range band`,1],['Size',`+1 Silhouette`,1],['Levitate',`Target hovers 1ft (~30cm) for duration`,1],['Adversary',`Target can be unwilling; upgrade check once for every rank in Athletics`,2],['Teleport',`Target does not move through path, but instead instantly appears; cannot appear inside something (appear on other side instead)`,2]]
 
 let predictMods = [['Quicksilver Reflexes',`Instead of asking question, add ${su+su} to Initiative checks next encounter`,0,,'QuicksilverReflexes'],['Scry',`Instead of asking question, learn location of one known Silhouette 0 object within long range`,1],['Empowered',`Ask about events within next 7 days`,1],['Additional Questions',`One extra question, plus one per ${ad+ad}`,1,,'AdditionalQuestions'],['Flash of Precognition',`Add ${su} to results of a check before end of encounter. Also, may add ${fa} to results of check targeting caster. Or may spend ${ad+ad+ad} to add ${su+su} or ${fa+fa} instead`,2,,'FlashofPrecognition'],['Cheat Death',`Forsee possible doom for caster within next 24 hours. Once before end of session, if caster is incapacitated orkilled, spend story point to set wounds/strain to WT and ST instead`,2,,'CheatDeath']]
 
