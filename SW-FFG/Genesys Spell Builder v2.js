@@ -183,7 +183,7 @@ await new Promise(resolve => {
 		close: (html) => {
 			let chosenImplementId = html.find('[name="implement"]')[0].value;
 			let g = mActor.getEmbeddedDocument("Item",chosenImplementId);
-			getImplementBonuses(g);
+			if (gear.length>0) {getImplementBonuses(g);}
 			resolve(html); }
     },{width: 600, height: "auto"}).render(true);
 });
