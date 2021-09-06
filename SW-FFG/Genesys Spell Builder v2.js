@@ -143,8 +143,17 @@ let transformInfo = {
 	skills: ['Primal'],
 	callback: (html) => {spellMods=transformMods;spellInfo=transformInfo;}
 }
+let enchantmentInfo = {
+	name: 'Enchantment',
+	desc: `<b>Range: </b>Short<p><b>Concentration</b><p>If successful, your character may subtly influence the emotional state of the target. This might include making them more frustrated and easily aggravated, or make your character more approachable and trustworthy.`,
+	diff: 2,
+	skills: ['Verse'],
+	callback: (html) => {spellMods=enchantmentMods;spellInfo=enchantmentInfo;},
+	range: 1
+}
 
-var spellsList = [areaInfo,attackInfo,augmentInfo,barrierInfo,conjureInfo,curseInfo,dispelInfo,healInfo,maskInfo,mindInfo,moveInfo,predictInfo,transformInfo];
+// removed mindInfo
+var spellsList = [areaInfo,attackInfo,augmentInfo,barrierInfo,conjureInfo,curseInfo,dispelInfo,enchantmentInfo,healInfo,mindInfo,moveInfo,predictInfo,transformInfo];
 
 // spellMods[0] = 'Name'
 // spellMods[1] = 'Description'
@@ -181,6 +190,7 @@ let predictMods = [['Quicksilver Reflexes',`Instead of asking question, add ${su
 
 let transformMods = [['Silhouette Increase',`+1 silhouette`,1,,'SilhouetteIncrease'],['Characteristic Retention',`Caster retains Intellect and Willpower while transformed`,1,,'CharacteristicRetention'],['Transform Gear',`Worn gear & wielded items change into natural markings (no benefit); when revert, gear is equipped as normal`,1,,'TransformGear'],['Dire Form',`+3 attack damage, +1 soak, +6 WT, +1 silhouette`,1,,'DireForm'],['Curse of the Wild',`Can target adversary instead of self`,3,,'CurseoftheWild']]
 
+let enchantmentMods = [['Range',`+1 range band`,1],['Additional Target',`One extra target, plus one per ${ad} spent`,1,,'AdditionalTarget'],['Intense Emotions',`Target is filled with intense emotion of caster's choice; upgrade difficulty of all social checks target makes`,1,,'IntenseEmotions'],['Calm',`Target adopts a calm mental state and ceases hostilities; may resume if hostile action taken against them or allies`,1],['Enduring Feelings',`Effects persist for ${knowledge} hour(s) without need for concentration`,2,,'EnduringFeelings'],['Frenzy',`Target filled with anger and rage. Might attack friend/foe indiscriminately`,2],['Modify Memory',`Target forgets anything that happens while under effects of spell`,2,,'ModifyMemory'],['Subtle',`Affected target unaware of spell and being under its effects`,2],['Suggest',`Target obeys a short command, but will not harm self/allies`,2],['Compel',`Target believes any untruths caster tells them for duration. Target can be compelled to attack an ally. Afterward, upgrade difficulty of caster's social checks against target once`,3]];
 
 let y = "";
 // let implementList = gear.reduce((acc, val,i) => acc += `<option value="${gear[i].id}">${gear[i].name}</option>`);
