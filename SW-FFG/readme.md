@@ -37,3 +37,7 @@ Requires a selected token. Finds the most recent weapon roll from the selected t
 ## Skill Challenge Tracker
 
 Based on David Shamp's "Skill Adventures" supplement. Just a simple visual aid for the GM to track the count of overall successes and overall failures.
+
+## Initialize Token Weapons
+
+This "initializes" the weapon-type items of the selected token's actor. This prevents them from having a damage of zero when being rolled, and saves you the trouble of having to manually open the actor sheet and edit each item first.
